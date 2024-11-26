@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Find Employee by Designation</title>
+</head>
+<body>
+    <h1>Find Employee by Designation</h1>
+    <form action="#" th:action="@{/viewByDesignation}" th:method="get">
+        <label for="name">Enter Designation:</label>
+        <input type="text" id="designation" name="designation" required>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

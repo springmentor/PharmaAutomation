@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma Automation System</title>
+    <style>
+        body {
+            background-color: lavender;
+            font-family: Arial, sans-serif;
+			background-image: url('/resources/images/pharma.jpg');
+			            
+        }
+        .form-container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+        }
+        table td {
+            padding: 10px 0;
+        }
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: red;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drug Management</h1>
+   <!-- <img th:src="@{/resources/images/pharma.jpg}" alt="PharmaImage" />-->
+    <ul>
+        <li>
+            <a th:href="@{/viewAllDrugs}">View All Drugs</a>
+        </li>
+        <li>
+            <a th:href="@{/add}">Add Drug</a>
+        </li>
+        <li>
+            <a th:href="@{/updateStatus}">Update Drug Status</a>
+        </li>
+        <li>
+            <a th:href="@{/viewByDrugStatus}">View Drugs by Status</a>
+        </li>
+        <li>
+            <a th:href="@{/deleteDrug}">Delete Drug</a>
+        </li>
+    </ul>
+</body>
+</html>
