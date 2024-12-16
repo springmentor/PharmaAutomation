@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        // Function to confirm deletion
+        function confirmDelete(event) {
+            var confirmation = confirm("Are you sure you want to delete this stock?");
+            if (!confirmation) {
+                event.preventDefault(); // Prevent form submission if the user cancels
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Stock List
+                <a href="/addStock" class="btn btn-success btn-sm float-end">Add New Stock</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Stock ID</th>
+                            <th>Supplier Name</th>
+                            <th>Drug Name</th>
+                            <th>Quantity</th>
+                            <th>Manufacturing Date</th>
+                            <th>Expiry Date</th>
+                            <th>Threshold</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="stock : ${stocks}">
+                            <td th:text="${stock.stockId}"></td>
+                            <td th:text="${stock.supplier.name}"></td> <!-- Display Supplier Name -->
+                            <td th:text="${stock.drug.drugName}"></td> <!-- Display Drug Name -->
+                            <td th:text="${stock.receivedQuantity}"></td>
+                            <td th:text="${stock.manufacturingDate}"></td>
+                            <td th:text="${stock.expiryDate}"></td>
+                            <td th:text="${stock.thresholdQuantity}"></td>
+                            <td>
+                                <a th:href="@{/updateStock/{stockId}(stockId=${stock.stockId})}" class="btn btn-warning btn-sm">Edit</a>
+                                <form th:action="@{/deleteStock/{stockId}(stockId=${stock.stockId})}" method="post" style="display:inline;" onsubmit="confirmDelete(event)">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div th:if="${#lists.isEmpty(stocks)}" class="alert alert-info">
+                    No stock records available.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
