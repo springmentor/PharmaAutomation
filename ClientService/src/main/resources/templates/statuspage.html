@@ -1,22 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Registration Status</title>
-    
-     <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Status</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Theme CSS -->
+	<link href="theme.css" rel="stylesheet">
+    <style>
         body {
             background-color: lavender;
             font-family: Arial, sans-serif;
         }
-        </style>
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .message {
+            text-align: center;
+        }
+        .success {
+            color: #1E88E5; /* Blue color */
+        }
+        .error {
+            color: red;
+        }
+        a {
+            text-decoration: none;
+            color: #1E88E5;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <!-- Check if errorMessage is present -->
-        <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+           <!-- <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/stocks}">Stock Management</a>
+                    </li>
+                </ul>
+            </div>-->
+        </div>
+    </nav>
 
-        <!-- If errorMessage is not present, display success message -->
-        <p th:unless="${errorMessage}" th:text="'Drug Added Successfully'"></p>
+    <!-- Main Container -->
+    <div class="container mt-4">
+     
+        <div class="message">
+            <p th:if="${successMessage}" th:text="${successMessage}" class="success"></p>
+            <p th:if="${errorMessage}" th:text="${errorMessage}" class="error"></p>
+            <a href="/" th:href="@{/}">Back to Home</a>
+        </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

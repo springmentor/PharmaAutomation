@@ -1,93 +1,60 @@
 package com.pas.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Drug {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int drugId;
-	private String drugName;
-	private String supplierId;
-	private String supplierName;
-	private float unitPrice;
-	private String status;
-	private int totalQuantity;
-	
-	@OneToMany(mappedBy = "drug", cascade =CascadeType.ALL)
-    private List<Stock> stocks;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int drugId;
+    private String drugName;
+    private String status;
+    private int totalQuantity;
 
-	public int getDrugId() {
-		return drugId;
-	}
+    // Default constructor
+    public Drug() {}
 
-	public void setDrugId(int drugId) {
-		this.drugId = drugId;
-	}
+    // Constructor with parameters
+    public Drug(String drugName, String status, int totalQuantity) {
+        this.drugName = drugName;
+        this.status = status;
+        this.totalQuantity = totalQuantity;
+    }
 
-	public String getDrugName() {
-		return drugName;
-	}
+    // Getters and Setters
+    public int getDrugId() {
+        return drugId;
+    }
 
-	public void setDrugName(String drugName) {
-		this.drugName = drugName;
-	}
+    public void setDrugId(int drugId) {
+        this.drugId = drugId;
+    }
 
-	public String getSupplierId() {
-		return supplierId;
-	}
+    public String getDrugName() {
+        return drugName;
+    }
 
-	public void setSupplierId(String supplierId) {
-		this.supplierId = supplierId;
-	}
+    public void setDrugName(String drugName) {
+        this.drugName = drugName;
+    }
 
-	public String getSupplierName() {
-		return supplierName;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setSupplierName(String supplierName) {
-		this.supplierName = supplierName;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public float getUnitPrice() {
-		return unitPrice;
-	}
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
 
-	public void setUnitPrice(float unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public int getTotalQuantity() {
-		return totalQuantity;
-	}
-
-	public void setTotalQuantity(int totalQuantity) {
-		this.totalQuantity = totalQuantity;
-	}
-
-	public List<Stock> getStocks() {
-		return stocks;
-	}
-
-	public void setStocks(List<Stock> stocks) {
-		this.stocks = stocks;
-	}
-
-	
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
 }

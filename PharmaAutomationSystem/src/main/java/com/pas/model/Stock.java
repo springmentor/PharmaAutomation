@@ -1,77 +1,129 @@
 package com.pas.model;
 
 import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 
 @Entity
 public class Stock {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int batchId;
-	private int drugQuantity;
-	private LocalDate mfDate;
-	private LocalDate expDate;
-	private int thresholdValue;
-	
-	@ManyToOne
-	@JoinColumn(name="drugId")
-	private Drug drug;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int stockId;
 
-	public int getBatchId() {
-		return batchId;
-	}
+    @ManyToOne
+    @JoinColumn(name = "drug_id", nullable = false)
+    private Drug drug;
 
-	public void setBatchId(int batchId) {
-		this.batchId = batchId;
-	}
+    @ManyToOne
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private Supplier supplier;
 
-	public int getDrugQuantity() {
-		return drugQuantity;
-	}
+    private int receivedQuantity;
 
-	public void setDrugQuantity(int drugQuantity) {
-		this.drugQuantity = drugQuantity;
-	}
+    private LocalDate receivedDate;
 
-	public LocalDate getMfDate() {
-		return mfDate;
-	}
+    private LocalDate manufacturingDate;
 
-	public void setMfDate(LocalDate mfDate) {
-		this.mfDate = mfDate;
-	}
+    @jakarta.validation.constraints.NotNull(message = "Expiry date cannot be null.")
+    @FutureOrPresent(message = "Expiry date must be in the future or today.")
+    private LocalDate expiryDate;
 
-	public LocalDate getExpDate() {
-		return expDate;
-	}
+    private double unitPrice;
 
-	public void setExpDate(LocalDate expDate) {
-		this.expDate = expDate;
-	}
+    private int thresholdQuantity;
 
-	public int getThresholdValue() {
-		return thresholdValue;
-	}
+    // Default constructor
+    public Stock() {}
 
-	public void setThresholdValue(int thresholdValue) {
-		this.thresholdValue = thresholdValue;
-	}
+    // Parameterized constructor
+    public Stock(Drug drug, Supplier supplier, int receivedQuantity, LocalDate receivedDate, 
+                 LocalDate manufacturingDate, LocalDate expiryDate, double unitPrice) {
+        this.drug = drug;
+        this.supplier = supplier;
+        this.receivedQuantity = receivedQuantity;
+        this.receivedDate = receivedDate;
+        this.manufacturingDate = manufacturingDate;
+        this.expiryDate = expiryDate;
+        this.unitPrice = unitPrice;
+    }
 
-	public Drug getDrug() {
-		return drug;
-	}
+    // Getters and Setters
+    public int getStockId() {
+        return stockId;
+    }
 
-	public void setDrug(Drug drug) {
-		this.drug = drug;
-	}
-	
-	
-	
+    public void setStockId(int stockId) {
+        this.stockId = stockId;
+    }
+
+    public Drug getDrug() {
+        return drug;
+    }
+
+    public void setDrug(Drug drug) {
+        this.drug = drug;
+        if (drug != null) {
+            drug.setTotalQuantity(drug.getTotalQuantity() + this.receivedQuantity);
+        }
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public int getReceivedQuantity() {
+        return receivedQuantity;
+    }
+
+    public void setReceivedQuantity(int receivedQuantity) {
+        this.receivedQuantity = receivedQuantity;
+        if (this.drug != null) {
+            this.drug.setTotalQuantity(this.drug.getTotalQuantity() + receivedQuantity);
+        }
+    }
+
+    public LocalDate getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(LocalDate receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public LocalDate getManufacturingDate() {
+        return manufacturingDate;
+    }
+
+    public void setManufacturingDate(LocalDate manufacturingDate) {
+        this.manufacturingDate = manufacturingDate;
+    }
+
+    public LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public int getThresholdQuantity() {
+        return thresholdQuantity;
+    }
+
+    public void setThresholdQuantity(int thresholdQuantity) {
+        this.thresholdQuantity = thresholdQuantity;
+    }
 }
