@@ -22,8 +22,6 @@ public class Prescription {
     @Column(nullable = false)
     private LocalDate prescribedDate;
 
-    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
     // Constructors
     public Prescription() {}
@@ -67,24 +65,5 @@ public class Prescription {
         this.prescribedDate = prescribedDate;
     }
 
-    public List<PrescriptionItem> getPrescriptionItems() {
-        return prescriptionItems;
-    }
-
-    public void setPrescriptionItems(List<PrescriptionItem> prescriptionItems) {
-        this.prescriptionItems = prescriptionItems;
-    }
-
-    // Helper method to add a prescription item
-    public void addPrescriptionItem(PrescriptionItem item) {
-        prescriptionItems.add(item);
-        item.setPrescription(this);
-    }
-
-    // Helper method to remove a prescription item
-    public void removePrescriptionItem(PrescriptionItem item) {
-        prescriptionItems.remove(item);
-        item.setPrescription(null);
-    }
 }
 
