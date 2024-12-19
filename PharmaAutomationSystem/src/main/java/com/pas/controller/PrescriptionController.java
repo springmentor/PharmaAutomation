@@ -8,8 +8,8 @@ import com.pas.service.StockService;
 
 @RestController
 public class PrescriptionController {
-	   @Autowired
-	    private PrescriptionService presService;
+//	   @Autowired
+//	    private PrescriptionService presService;
 
 	
 }
