@@ -6,70 +6,41 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import jakarta.persistence.ManyToOne;
 
+import lombok.Data;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@Data
 @Entity
 public class Stock {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private int batchId;
+	    
+	    @NotNull(message = "Manufacturing date cannot be null")
+	    @PastOrPresent(message = "Manufacturing date must be today or in the past")
 	    private LocalDate manDate;
+	    
+	    @NotNull(message = "Expiry date cannot be null")
+	    @FutureOrPresent(message = "Expiry date must be today or in the future")
 	    private LocalDate expDate;
+	    
+	    @Min(value = 1, message = "Total quantity must be at least 1")
 	    private int totalQuantity;
+	    
+	    @Positive(message = "Threshold level must be greater than 0")
 	    private int thresholdLevel;
 	    @ManyToOne
 	    @JoinColumn(name="drugId")
+	    @JsonIgnoreProperties("stocks")
 	    private Drug drug;
-	   
-
-	    public Drug getDrug() {
-			return drug;
-		}
-
-		public void setDrug(Drug drug) {
-			this.drug = drug;
-		}
-
-		public int getBatchId() {
-	        return batchId;
-	    }
-
-	    public void setBatchId(int storkId) {
-	        this.batchId = storkId;
-	    }
-
-	    public LocalDate getManDate() {
-	        return manDate;
-	    }
-
-	    public void setManDate(LocalDate manDate) {
-	        this.manDate = manDate;
-	    }
-
-	    public LocalDate getExpDate() {
-	        return expDate;
-	    }
-
-	    public void setExpDate(LocalDate expDate) {
-	        this.expDate = expDate;
-	    }
-
-	    public int getTotalQuantity() {
-	        return totalQuantity;
-	    }
-
-	    public void setTotalQuantity(int totalQuantity) {
-	        this.totalQuantity = totalQuantity;
-	    }
-
-	    public int getThresholdLevel() {
-	        return thresholdLevel;
-	    }
-
-	    public void setThresholdLevel(int thresholdLevel) {
-	        this.thresholdLevel = thresholdLevel;
-	    }
-
+		
 	}
 
 

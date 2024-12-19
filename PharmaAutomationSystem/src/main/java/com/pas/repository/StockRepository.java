@@ -4,6 +4,7 @@ package com.pas.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.pas.model.Stock;
@@ -11,5 +12,7 @@ import com.pas.model.Stock;
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Integer> {
     
-    List<Stock> findByTotalQuantityLessThan(int thresholdLevel);
+	  @Query("SELECT s FROM Stock s WHERE s.totalQuantity < s.thresholdLevel")
+	    List<Stock> findByTotalQuantityLessThanThresholdLevel();
 }
+

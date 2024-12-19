@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pas.exception.InvalidEntityException;
 import com.pas.model.Drug;
 import com.pas.service.DrugService;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -24,7 +27,7 @@ public class DrugController {
     
     
     @PostMapping("/addDrug")
-    public ResponseEntity<Drug> addDrug(@RequestBody Drug drug) {
+    public ResponseEntity<Drug> addDrug(@Valid @RequestBody Drug drug) {
         
         return new ResponseEntity<>(drugService.addDrug(drug), HttpStatus.OK);
     }
@@ -45,7 +48,7 @@ public class DrugController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
     }
     @PutMapping("/updateDrugStatus/{id}/{status}")
-    public ResponseEntity<Drug> updateDrugStatus(@PathVariable int id, @PathVariable String status) {
+    public ResponseEntity<Drug> updateDrugStatus(@Valid @PathVariable int id, @PathVariable String status)throws InvalidEntityException {
         Drug updatedstatus = drugService.updateDrugStatus(id, status);
         if (updatedstatus != null) {
             return new ResponseEntity<>(updatedstatus, HttpStatus.OK); 

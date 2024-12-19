@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pas.exception.InvalidEntityException;
 import com.pas.model.Drug;
 import com.pas.repository.DrugRepository;
 
@@ -28,8 +29,11 @@ public class DrugService {
 	    }
 	    return false;
 	}
-	public Drug updateDrugStatus(int id, String status) {
+	public Drug updateDrugStatus(int id, String status)throws InvalidEntityException {
 	    Optional<Drug> optionalDrug = drugRepository.findById(id);
+	    if (!optionalDrug.isPresent()) {
+ 	        throw new InvalidEntityException("Drug with ID " + id + " does not exist.");
+ 	    }
 	    if (optionalDrug.isPresent()) {
 	        Drug drug = optionalDrug.get();
 	        drug.setStatus(status);
@@ -37,8 +41,6 @@ public class DrugService {
 	    }
 	    return null;
 	}
-	public List<Drug> findDrugsBelowThreshold(int threshold) {
-	    return drugRepository.findByTotalQuantityLessThan(threshold);
-	}
+	
 
 }

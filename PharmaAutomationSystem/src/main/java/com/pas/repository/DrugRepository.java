@@ -12,6 +12,5 @@ import com.pas.model.Drug;
 public interface DrugRepository extends JpaRepository<Drug, Integer> {
 	
 	List<Drug> findByStatus(String state);
-	List<Drug> findByTotalQuantityLessThan(int totalQuantity);
-
+	
 }
