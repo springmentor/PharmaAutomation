@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drugs List</title>
+    <style>
+        :root {
+            --primary-color: #2a2a72;
+            --secondary-color: #009ffd;
+            --text-color: #ffffff;
+            --table-header-bg: #444;
+            --table-row-bg: #555;
+            --table-hover-bg: #666;
+            --accent-color: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .table-container {
+            width: 90%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-size: 28px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            font-size: 16px;
+        }
+
+        td {
+            background-color: var(--table-row-bg);
+        }
+
+        tr:hover td {
+            background-color: var(--table-hover-bg);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .table-container {
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .navbar a {
+                margin: 10px 0;
+            }
+
+            .table-container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Pharma Automation System</h1>
+        <div>
+            <a th:href="@{/addDrug}">Add Drug</a>
+            <a th:href="@{/updateStatus}">Update Status</a>
+            <a th:href="@{/viewDrugStatus}">View by Status</a>
+            <a th:href="@{/deleteDrug}">Delete Drug</a>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <h2>Drugs List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Drug ID</th>
+                    <th>Drug Name</th>
+                    <th>Supplier ID</th>
+                    <th>Supplier Name</th>
+                    <th>Unit Price</th>
+                    <th>Status</th>
+                    <th>Total Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="d : ${drugs}">
+                    <td th:text="${d.drugId}">ID</td>
+                    <td th:text="${d.drugName}">Name</td>
+                    <td th:text="${d.supplierId}">Supplier ID</td>
+                    <td th:text="${d.supplierName}">Supplier Name</td>
+                    <td th:text="${d.unitPrice}">Unit Price</td>
+                    <td th:text="${d.status}">Status</td>
+                    <td th:text="${d.totalQuantity}">Total Quantity</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

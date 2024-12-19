@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Form</title>
+    <title></title>
     <style>
         body {
             background-color: lavender;
@@ -51,28 +51,44 @@
 </head>
 <body>
     <div class="form-container">
-        <h2>Employee Registeration Form</h2>
+        <h2>Add Drug Form</h2>
          
-        <form th:action="@{/register}" th:object="${employee}" method="post">
+        <form th:action="@{/add}" th:object="${drug}" method="post">
             <table>
                 
                 <tr>
-                    <td><label for="empName">Employee Name:</label></td>
+                    <td><label for="drugName">Drug Name:</label></td>
                     <td><input type="text" id="name" th:field="*{name}" /></td>
                 </tr>
                 <tr>
-                    <td><label for="salary">Employee Salary:</label></td>
+                    <td><label for="supplierId">Supplier ID :</label></td>
                     <td><input type="text" id="salary" th:field="*{salary}" /></td>
                 </tr>
 				
 				<tr>
-				     <td><label for="designation">Employee Designation:</label></td>
+				     <td><label for="supplierName">Supplier Name:</label></td>
 				     <td><input type="text" id="designation" th:field="*{designation}" /></td>
 				 </tr>
-                                
-                <tr>
+				 <tr>
+				 	<td><label for="status">Status:</label></td>
+				 	<td>
+				 		<select id="status" name="status" th:field="*{status}">
+				 		<option value="active" th:selected="*{status == 'active'}">Active</option>
+				 		<option value="banned" th:selected="*{status == 'banned'}">Banned</option>
+				 		</select>
+				 	</td>
+				 </tr>               
+                 <tr>
+					     <td><label for="unitPrice">Unit Price:</label></td>
+					     <td><input type="text" id="designation" th:field="*{designation}" /></td>
+				 </tr>	
+				 <tr>
+					 	 <td><label for="totalQuantity">totalQuantity:</label></td>
+					 	 <td><input type="text" id="designation" th:field="*{designation}" /></td>
+				 </tr>
+				 <tr>				
                     <td colspan="2">
-                        <input type="submit" value="Register" />
+                        <input type="submit" value="Add" />
                     </td>
                 </tr>
             </table>

@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Employee List</title>
+    <title>Drugs List</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: lavender; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        body { font-family: Arial, sans-serif; background-color: rgb(128, 255, 255); }
+        table { width: 100%; border-collapse: collapse; text-align: center; margin: 20px 0; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
         th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
-    <h2>Employee List</h2>
+    <h2>Drugs List</h2>
     <table>
         <thead>
             <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Employee Salary</th>
-				<th>Employee Designation</th>
+                <th>Drug ID</th>
+                <th>Drug Name</th>
+				<th>Supplier ID</th>
+				<th>Supplier Name</th>
+                <th>Unit Price</th>
+				<th>Status</th>
+				<th>Total Quantity</th>
             </tr>
         </thead>
 		<tbody>
 		    <tr th:each="emp : ${employees}">
 		        <td th:text="${emp.id}">ID</td>
 		        <td th:text="${emp.name}">Name</td>
-				<td th:text="${emp.salary}">Salary</td>
-		        <td th:text="${emp.designation}">Designation</td>
+				<td th:text="${emp.salary}">Supplier ID</td>
+		        <td th:text="${emp.designation}">Supplier Name</td>
+				<td th:text="${emp.id}">Unit Price</td>
+				<td th:text="${emp.name}">Status</td>
+			    <td th:text="${emp.designation}">Total Quantity</td>
 		       
 		    </tr>
 		</tbody>

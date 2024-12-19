@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drug Registration Status</title>
+    <title>Registration Status</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -112,48 +112,35 @@
             font-size: 20px;
             font-weight: 600;
             margin-top: 15px;
+            animation: fadeIn 0.8s ease-out, pulse 1.5s infinite;
         }
 
         .error-message {
             color: #ff4d4d;
             font-size: 18px;
+            animation: shake 0.5s ease-in-out;
         }
 
-      
-        .success-checkmark {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            display: block;
-            stroke-width: 2;
-            stroke: var(--accent-color);
-            stroke-miterlimit: 10;
-            margin: 0 auto 20px;
-            animation: popIn 0.6s ease-in-out;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
-        .success-checkmark .check {
-            transform-origin: center;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
-            animation: stroke 0.8s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-        }
-
-        @keyframes stroke {
-            100% {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: scale(0);
+        @keyframes fadeIn {
+            from {
                 opacity: 0;
+                transform: translateY(20px);
             }
-            100% {
-                transform: scale(1);
+            to {
                 opacity: 1;
+                transform: translateY(0);
             }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         @media (max-width: 768px) {
@@ -164,20 +151,18 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container nav-content">
-            <div class="logo">
-                <i class="fas fa-pills"></i>
-                Pharma Automation
-            </div>
-            <ul class="nav-menu">
-                <li><a th:href="@{/addDrug}"><i class="fas fa-plus-circle"></i>Add Drug</a></li>
-                <li><a th:href="@{/updateStatus}"><i class="fas fa-sync"></i>Update Status</a></li>
-                <li><a th:href="@{/viewDrugStatus}"><i class="fas fa-search"></i>View Status</a></li>
-                <li><a th:href="@{/deleteDrug}"><i class="fas fa-trash-alt"></i>Delete Drug</a></li>
-            </ul>
-        </div>
-    </nav>
+	<nav class="navbar">
+	        <div class="container nav-content">
+	            <div class="logo">
+	                <i class="fas fa-pills"></i>
+	                Pharma Automation
+	            </div>
+	            <ul class="nav-menu">
+					<li><a th:href="@{/Home}"><i class="fa-solid fa-house"></i>Home</a></li>
+	                
+	            </ul>
+	        </div>
+	    </nav>
 
     <main class="main-content">
         <div class="status-container">
@@ -186,11 +171,8 @@
             </div>
             
             <div th:unless="${errorMessage}">
-                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                    <circle class="check__circle" cx="26" cy="26" r="25" fill="none"/>
-                    <path class="check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                </svg>
-                <p class="success-message">Drug Added Successfully!</p>
+				
+                <p th:text="${successMessage}" class="success-message"></p>
             </div>
         </div>
     </main>

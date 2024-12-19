@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Status</title>
+    <style>
+        body {
+            background-color: rgb(255, 255, 255);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .navbar a:hover {
+            color: #4CAF50;
+        }
+        .status-container {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            margin-top: 60px;
+        }
+        .status-container p {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Pharma Automation System</h1>
+        <div>
+            <a th:href="@{/viewAllDrugs}">View All Drugs</a>
+            <a th:href="@{/addDrug}">Add Drug</a>
+            <a th:href="@{/updateStatus}">Update Status</a>
+            <a th:href="@{/viewDrugStatus}">View by Status</a>
+            <a th:href="@{/deleteDrug}">Delete Drug</a>
+        </div>
+    </div>
+
+    <div class="status-container">
+        <p th:if="${errorMessage}" th:text="${errorMessage}" class="error-message"></p>
+
+        <p th:unless="${errorMessage}" th:text="'Drug deleted Successful'" class="success-message"></p>
+    </div>
+</body>
+</html>

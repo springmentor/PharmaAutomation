@@ -182,46 +182,39 @@
     </style>
 </head>
 <body>
-	<nav class="navbar">
-	        <div class="container nav-content">
-	            <div class="logo">
-	                <i class="fas fa-pills"></i>
-	                Pharma Automation
-	            </div>
-	            <ul class="nav-menu">
-					<li><a th:href="@{/Home}"><i class="fa-solid fa-house"></i>Home</a></li>
-	                <li><a th:href="@{/addDrug}"><i class="fas fa-plus-circle"></i>Add Drug</a></li>
-	                <li><a th:href="@{/updateStatus}"><i class="fas fa-sync"></i>Update Status</a></li>
-	                <li><a th:href="@{/viewDrugStatus}"><i class="fas fa-search"></i>View Status</a></li>
-	                <li><a th:href="@{/deleteDrug}"><i class="fas fa-trash-alt"></i>Delete Drug</a></li>
-	            </ul>
-	        </div>
-	    </nav>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <i class="fas fa-pills"></i>
+                Pharma Automation
+            </div>
+            <ul class="nav-menu">
+				<li><a th:href="@{/Home}"><i class="fa-solid fa-house"></i>Home</a></li>
+                <li><a th:href="@{/addStock}"><i class="fas fa-plus-circle"></i>Add Stock</a></li>
+                <li><a th:href="@{/viewDrugsBelowThreshold}"><i class="fas fa-search"></i>View Drugs by Threshold</a></li>
+                <li><a th:href="@{/deleteStock}"><i class="fas fa-trash-alt"></i>Delete Stock</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main class="main-content container">
         <div class="action-grid">
             <div class="action-card" data-delay="0">
-                <a th:href="@{/addDrug}">
+                <a th:href="@{/addStock}">
                     <i class="fas fa-plus-circle"></i>
-                    Add New Drug
+                    Add New Stock
                 </a>
             </div>
             <div class="action-card" data-delay="1">
-                <a th:href="@{/updateStatus}">
-                    <i class="fas fa-sync"></i>
-                    Update Drug Status
+                <a th:href="@{/viewDrugsBelowThreshold}">
+                    <i class="fas fa-search"></i>
+                    View Drugs by Threshold
                 </a>
             </div>
             <div class="action-card" data-delay="2">
-                <a th:href="@{/viewDrugStatus}">
-                    <i class="fas fa-search"></i>
-                    View Drugs by Status
-                </a>
-            </div>
-            <div class="action-card" data-delay="3">
-                <a th:href="@{/deleteDrug}">
+                <a th:href="@{/deleteStock}">
                     <i class="fas fa-trash-alt"></i>
-                    Delete Drug
+                    Delete Stock
                 </a>
             </div>
         </div>
@@ -229,14 +222,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-           
             const navItems = document.querySelectorAll('.nav-menu li');
             navItems.forEach((item, index) => {
                 const delay = index * 0.2; 
                 item.style.animation = `slideInLeft 0.5s ease ${delay}s forwards`;
             });
 
-  
             const cards = document.querySelectorAll('.action-card');
             cards.forEach((card, index) => {
                 const delay = index * 0.3; 
