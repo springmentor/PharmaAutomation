@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pas.model.Drug;
 import com.pas.model.Stock;
+import com.pas.model.Supplier;
 import com.pas.repository.DrugRepository;
 import com.pas.repository.StockRepository;
 
@@ -23,7 +24,7 @@ public class StockService {
     private DrugRepository drugRepository;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService mailSender;
 
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
@@ -90,38 +91,38 @@ public class StockService {
         }
     }
 
-    // Method to send an email
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        mailSender.send(message);
-        System.out.println("Email sent successfully to " + to);
-    }
+    
 
-    // Method to send reorder notifications
     public String sendReorderNotification() {
+        // Retrieve all stocks below the threshold
         List<Stock> stocks = stockRepository.findStocksBelowThreshold();
 
         System.out.println("Found " + stocks.size() + " stocks below threshold.");
 
         for (Stock stock : stocks) {
             Drug drug = stock.getDrug();
+            Supplier supplier = stock.getSupplier(); // Directly retrieve the Supplier entity
+            String supplierEmail = supplier.getEmail(); // Assuming the Supplier entity has an `email` field
+
+            // Prepare email subject and body
             String subject = "Reorder Notification for Drug: " + drug.getDrugName();
-            String body = "The stock for drug " + drug.getDrugName() + 
-                          " (Batch ID: " + stock.getStockId() + 
+            String body = "The stock for drug " + drug.getDrugName() +
+                          " (Batch ID: " + stock.getStockId() +
                           ") is below the threshold. Please reorder.";
 
-            System.out.println("Sending email for drug: " + drug.getDrugName());
-            sendEmail("ridhyapunj@gmail.com", subject, body);
+            System.out.println("Sending email to supplier: " + supplierEmail + " for drug: " + drug.getDrugName());
+            
+            // Send email to the supplier
+            mailSender.sendEmail(supplierEmail, subject, body);
         }
 
         return "Mail sent";
     }
 
+
+
     // Scheduled task to send reorder notifications daily at noon
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "*/5 * * * * ?")
     public void scheduledReorderNotification() {
         sendReorderNotification();
         System.out.println("Reorder notifications sent.");
