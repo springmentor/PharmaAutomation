@@ -52,8 +52,9 @@ public class PrescriptionService {
             Drug drug = drugRepository.findById(item.getDrug().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Drug not found with id: " + item.getDrug().getId()));
 
+            // Prevent deactivated drugs from being prescribed
             if (!drug.isActive()) {
-                throw new IllegalStateException("Cannot prescribe inactive drug: " + drug.getName());
+                throw new IllegalStateException("Cannot prescribe deactivated drug: " + drug.getName());
             }
 
             int totalAvailableQuantity = stockRepository.getTotalQuantityByDrugId(drug.getId());
@@ -61,25 +62,46 @@ public class PrescriptionService {
                 throw new IllegalStateException("Insufficient stock for drug: " + drug.getName());
             }
 
-            List<Stock> stocks = stockRepository.findByDrugIdOrderByExpiryDateAsc(drug.getId());
-            int remainingQuantity = item.getQuantity();
-
-            for (Stock stock : stocks) {
-                if (remainingQuantity <= 0) break;
-
-                if (stock.getAvailableQuantity() <= remainingQuantity) {
-                    remainingQuantity -= stock.getAvailableQuantity();
-                    stock.setAvailableQuantity(0);
-                } else {
-                    stock.setAvailableQuantity(stock.getAvailableQuantity() - remainingQuantity);
-                    remainingQuantity = 0;
-                }
-
-                stockRepository.save(stock);
-            }
+            updateStockQuantities(drug.getId(), item.getQuantity());
         });
 
-        return prescriptionRepository.save(prescription);
+        prescription.setIsBillGenerated(false);
+        Prescription savedPrescription = prescriptionRepository.save(prescription);
+        
+        // Explicitly save items
+        prescription.getItems().forEach(item -> item.setPrescription(savedPrescription));
+        return savedPrescription;
+    }
+
+
+
+    @Transactional
+    public void markPrescriptionAsBilled(Long prescriptionId) {
+        Prescription prescription = getPrescriptionById(prescriptionId);
+        prescription.setIsBillGenerated(true);
+        prescriptionRepository.save(prescription);  // Direct repository call (no cascade)
+    }
+
+
+    private void updateStockQuantities(Long drugId, int requiredQuantity) {
+    	 System.out.println("Updating stock for drugId: " + drugId + " Quantity: " + requiredQuantity);
+    	   
+        List<Stock> stocks = stockRepository.findByDrugIdOrderByExpiryDateAsc(drugId);
+        int remainingQuantity = requiredQuantity;
+
+        for (Stock stock : stocks) {
+            if (remainingQuantity <= 0) break;
+
+            if (stock.getAvailableQuantity() <= remainingQuantity) {
+                remainingQuantity -= stock.getAvailableQuantity();
+                stock.setAvailableQuantity(0);
+            } else {
+                stock.setAvailableQuantity(stock.getAvailableQuantity() - remainingQuantity);
+                remainingQuantity = 0;
+            }
+
+            stockRepository.save(stock);
+        }
     }
 
     public List<Map.Entry<Drug, Long>> getMaxPrescribedDrugs(int limit) {
@@ -161,6 +183,4 @@ public class PrescriptionService {
                 .collect(Collectors.toList());
     }
 }
-
-
 

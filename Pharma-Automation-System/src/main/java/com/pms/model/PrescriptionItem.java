@@ -24,4 +24,9 @@ public class PrescriptionItem {
 
     @Column(nullable = false)
     private int quantity;
+
+	public Object setPrescription(Prescription savedPrescription) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

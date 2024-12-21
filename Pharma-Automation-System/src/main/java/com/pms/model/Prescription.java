@@ -24,8 +24,19 @@ public class Prescription {
     private String patientName;
     private boolean isBillGenerated;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "prescription_id")
     private List<PrescriptionItem> items;
+
+
+	public void setIsBillGenerated(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean getIsBillGenerated() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
 

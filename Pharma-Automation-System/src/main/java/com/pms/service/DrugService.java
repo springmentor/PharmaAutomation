@@ -64,6 +64,11 @@ public class DrugService {
         if (drug.isBanned() && (drug.getBannedReason() == null)) {
             throw new InvalidEntityException("Banned reason must be provided if the drug is marked as banned.");
         }
+        
+        // If the drug is banned, deactivate it
+        if (drug.isBanned()) {
+            existingDrug.setActive(false);  // Deactivate the drug
+        }
 
         // Update the fields
         existingDrug.setName(drug.getName());

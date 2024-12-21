@@ -42,7 +42,7 @@ public class BillController {
 
         // Update the prescription's bill generated status
         Prescription prescription = prescriptionService.getPrescriptionById(prescriptionId);
-        prescription.setBillGenerated(true);
+        prescription.setIsBillGenerated(true);
 
         // Save the updated prescription
         prescriptionService.addPrescription(prescription);

@@ -22,6 +22,9 @@ public class StockService {
     private final DrugRepository drugRepository;
     private final SmsService smsService;
     private final EmailService emailService;
+    
+    @Autowired
+    private Drug drug;
 
     @Autowired
     public StockService(StockRepository stockRepository, DrugRepository drugRepository, SmsService smsService, EmailService emailService) {
@@ -62,6 +65,9 @@ public class StockService {
         if (!stock.getDrug().isActive()) {
             throw new IllegalStateException("Cannot update stock for inactive drug: " + stock.getDrug().getName());
         }
+        if (!drug.isActive()) {
+            throw new IllegalStateException("Cannot add stock for deactivated drug: " + drug.getName());
+        }
 
         int quantityDifference = stockDetails.getQuantity() - stock.getQuantity();
 
@@ -77,8 +83,7 @@ public class StockService {
 
         return stockRepository.save(stock);
     }
-
-    public List<Stock> getAllStocks() {
+      public List<Stock> getAllStocks() {
         return stockRepository.findAll().stream()
             .filter(stock -> stock.getDrug().isActive())
             .collect(Collectors.toList());
