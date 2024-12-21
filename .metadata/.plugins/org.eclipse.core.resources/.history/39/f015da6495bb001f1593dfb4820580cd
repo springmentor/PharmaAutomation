@@ -1,0 +1,87 @@
+package com.pas.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pas.model.Drug;
+import com.pas.model.Stock;
+import com.pas.repository.DrugRepository;
+import com.pas.repository.StockRepository;
+@Service
+public class StockService {
+
+    @Autowired
+    private StockRepository stockRepository;
+
+    @Autowired
+    private DrugRepository drugRepository;
+
+    public List<Stock> getAllStocks() {
+        return stockRepository.findAll();
+    }
+
+    public Stock getStockById(int stockId) {
+        return stockRepository.findById(stockId).orElse(null);
+    }
+
+    public Stock addStock(Stock stock) {
+        // Fetch the drug from the database using the drugId from stock
+        Drug drug = drugRepository.findById(stock.getDrug().getDrugId()).orElse(null);
+        
+        if (drug == null) {
+            return null;  // Return null if drug is not found
+        }
+
+        // Update the drug's quantity
+        int newQuantity = drug.getTotalQuantity() + stock.getReceivedQuantity();
+        drug.setTotalQuantity(newQuantity);
+        
+        // Save the updated drug
+        drugRepository.save(drug);
+
+        // Save the stock
+        return stockRepository.save(stock);
+    }
+
+    public Stock updateStock(int stockId, Stock stockDetails) {
+        Stock existingStock = stockRepository.findById(stockId).orElse(null);
+        
+        if (existingStock != null) {
+            // Update stock details
+            existingStock.setThresholdQuantity(stockDetails.getThresholdQuantity());
+            return stockRepository.save(existingStock);
+        }
+
+        return null;
+    }
+
+    public void deleteStock(int stockId) {
+        Stock stock = stockRepository.findById(stockId).orElse(null);
+        
+        if (stock != null) {
+            // Fetch the associated drug
+            Drug drug = stock.getDrug();
+
+            if (drug != null) {
+                // Reduce the drug quantity
+                int newQuantity = drug.getTotalQuantity() - stock.getReceivedQuantity();
+
+                // Check if the new quantity would be negative
+                if (newQuantity < 0) {
+                    throw new IllegalArgumentException("Not enough drug quantity to delete stock.");
+                }
+
+                // Update the drug quantity
+                drug.setTotalQuantity(newQuantity);
+                drugRepository.save(drug);
+            }
+
+            // Finally, delete the stock
+            stockRepository.deleteById(stockId);
+        }
+    }
+}

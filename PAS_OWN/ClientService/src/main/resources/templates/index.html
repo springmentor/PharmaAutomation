@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma Automation System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom Theme CSS -->
+    <link href="/css/theme.css" rel="stylesheet">
+    <style>
+        /* General body and container styles */
+        body {
+            background: linear-gradient(135deg, #3498db, #5dade2); /* Light Blue Gradient */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 3em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-top: 50px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* Styling for Links */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        li {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        li:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        li i {
+            font-size: 2.5em;
+            color: #3498db; /* Blue Icon Color */
+            margin-bottom: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        a:hover {
+            color: #3498db; /* Blue Hover Color */
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #3498db; /* Blue Navbar */
+            padding: 20px 0;
+        }
+
+        nav a.navbar-brand {
+            color: #ecf0f1;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        nav .nav-link {
+            color: #ecf0f1;
+            font-weight: 500;
+        }
+
+        nav .nav-link:hover {
+            color: #f39c12;
+        }
+
+        /* Button Styling */
+        .btn {
+            background-color: #3498db; /* Blue Button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9; /* Darker Blue on Hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <h1>Welcome to Pharma Automation System</h1>
+        
+        <!-- Drug Management Section -->
+        <div class="section">
+            <h2>Drug Management</h2>
+            <ul>
+            	<li><a th:href="@{/addDrug}"><i class="fas fa-plus-circle"></i> Add New Drug</a></li>
+                <li><a th:href="@{/viewDrugs}"><i class="fas fa-pills"></i> View All Drugs</a></li>
+                
+                
+            </ul>
+        </div>
+
+        <!-- Stock Management Section -->
+        <div class="section">
+            <h2>Stock Management</h2>
+            <ul>
+                <li><a th:href="@{/addStock}"><i class="fas fa-box"></i> Add New Stock</a></li>
+                <li><a th:href="@{/viewStock}"><i class="fas fa-boxes"></i> View All Stocks</a></li>
+            </ul>
+        </div>
+
+        <!-- Supplier Management Section -->
+        <div class="section">
+            <h2>Supplier Management</h2>
+            <ul>
+                <li><a th:href="@{/addSupplier}"><i class="fas fa-plus-circle"></i> Add New Supplier</a></li>
+                <li><a th:href="@{/viewSuppliers}"><i class="fas fa-truck"></i> View All Suppliers</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

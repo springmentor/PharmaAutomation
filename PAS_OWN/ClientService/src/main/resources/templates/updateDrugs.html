@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Drug</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Update Drug
+            </div>
+            <div class="card-body">
+                <!-- Form to update drug status -->
+                <form th:action="@{/updateDrug/{drugId}(drugId=${drug.drugId})}" method="post">
+    				<input type="hidden" th:value="${drug.drugId}" name="drugId">
+    				<div class="mb-3">
+			        <label for="status" class="form-label">Status</label>
+				        <select class="form-select" id="status" name="status" required>
+				            <option th:value="${drug.status}" th:text="${drug.status}" selected="selected"></option>
+				            <option value="Active">Active</option>
+				            <option value="Banned">Banned</option>
+				        </select>
+					</div>
+					<button type="submit" class="btn btn-success">Update Status</button>
+					<a href="/viewDrugs" class="btn btn-secondary">Back to Drug List</a>
+				</form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
