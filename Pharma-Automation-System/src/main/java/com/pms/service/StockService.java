@@ -99,6 +99,35 @@ public class StockService {
         
         stockRepository.delete(stock);
     }
+    @Transactional
+    public void updateStockQuantities(Long drugId, int quantityToReduce) {
+        List<Stock> stocks = stockRepository.findByDrugIdOrderByExpiryDateAsc(drugId);
+        int remainingQuantity = quantityToReduce;
+
+        for (Stock stock : stocks) {
+            if (remainingQuantity <= 0) {
+                break;
+            }
+
+            int availableQuantity = stock.getAvailableQuantity();
+            int quantityToReduceFromStock = Math.min(availableQuantity, remainingQuantity);
+
+            stock.setAvailableQuantity(availableQuantity - quantityToReduceFromStock);
+            stockRepository.save(stock);
+
+            remainingQuantity -= quantityToReduceFromStock;
+        }
+
+        if (remainingQuantity > 0) {
+            throw new IllegalStateException("Insufficient stock to fulfill the prescription");
+        }
+
+//        // Update the total quantity for the drug
+//        Drug drug = drugRepository.findById(drugId)
+//                .orElseThrow(() -> new EntityNotFoundException("Drug not found with id: " + drugId));
+//        drug.setTotalQuantity(drug.getTotalQuantity() - quantityToReduce);
+//        drugRepository.save(drug);
+    }
 
 
     public List<Stock> getStocksBelowThreshold() {
@@ -129,7 +158,7 @@ public class StockService {
 
 
 //     @Scheduled(cron = "*/5 * * * * ?") 
-//	 @Scheduled(cron = "0 0 * * * ?") //runs every one hr
+//	 @Scheduled(cron = "0 0 * * * * ?") //runs every one hr
 	 public void scheduledReorderNotifications() {
 	     // Automatically process reorder notifications for all stocks
 	     String result = sendReorderNotification();

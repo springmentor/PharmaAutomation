@@ -18,7 +18,7 @@ public class Bill {
     private Prescription prescription;
 
     @Column(nullable = false)
-    private double amount;
+    private Double amount;
 
     @Column(nullable = false)
     private LocalDate billDate;
@@ -27,6 +27,6 @@ public class Bill {
     private double discountPercentage;
 
     @Column(nullable = false)
-    private double discountedAmount;
+    private Double discountedAmount;
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,21 +23,39 @@ public class Prescription {
 
     @Column(nullable = false)
     private String patientName;
+
     private boolean isBillGenerated;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "prescription_id")
-    private List<PrescriptionItem> items;
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PrescriptionItem> items = new ArrayList<>();
 
+    public void setIsBillGenerated(boolean isBillGenerated) {
+        this.isBillGenerated = isBillGenerated;
+    }
 
-	public void setIsBillGenerated(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+    public boolean getIsBillGenerated() {
+        return this.isBillGenerated;
+    }
 
-	public boolean getIsBillGenerated() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void addItem(PrescriptionItem item) {
+        items.add(item);
+        item.setPrescription(this);
+    }
+
+    public void removeItem(PrescriptionItem item) {
+        items.remove(item);
+        item.setPrescription(null);
+    }
+    @Override
+    public String toString() {
+        return "Prescription{" +
+                "id=" + id +
+                ", prescriptionDate=" + prescriptionDate +
+                ", doctorName='" + doctorName + '\'' +
+                ", patientName='" + patientName + '\'' +
+                ", isBillGenerated=" + isBillGenerated +
+                ", itemsCount=" + (items != null ? items.size() : 0) +
+                '}';
+    }
+
 }
-

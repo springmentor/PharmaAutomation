@@ -43,6 +43,16 @@ public class Stock {
     @NotNull(message = "Threshold value cannot be null")
     @Positive(message = "Threshold value must be greater than zero")
     private int threshold;
+    
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "id=" + id +
+                ", drugId=" + (drug != null ? drug.getId() : null) +
+                ", availableQuantity=" + availableQuantity +
+                ", expiryDate=" + expiryDate +
+                '}';
+    }
 
 	public String getBatchNo() {
 		// TODO Auto-generated method stub

@@ -1,13 +1,6 @@
 package com.pms.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -25,8 +18,25 @@ public class PrescriptionItem {
     @Column(nullable = false)
     private int quantity;
 
-	public Object setPrescription(Prescription savedPrescription) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @ManyToOne
+    @JoinColumn(name = "prescription_id", nullable = false)
+    private Prescription prescription;
+    
+    @Override
+    public String toString() {
+        return "PrescriptionItem{" +
+                "id=" + id +
+                ", drugId=" + (drug != null ? drug.getId() : null) +
+                ", quantity=" + quantity +
+                ", prescriptionId=" + (prescription != null ? prescription.getId() : null) +
+                '}';
+    }
+
+    public void setPrescription(Prescription prescription) {
+        this.prescription = prescription;
+    }
+
+    public Prescription getPrescription() {
+        return this.prescription;
+    }
 }

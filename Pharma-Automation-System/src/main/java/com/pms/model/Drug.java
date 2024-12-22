@@ -1,6 +1,6 @@
 package com.pms.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +9,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+@Component
 @Entity
 @Data
 @Table(name = "drugs")
@@ -42,10 +44,28 @@ public class Drug {
     private String bannedReason;
 
     @OneToMany(mappedBy = "drug", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("drug")
+    @JsonIgnore
     private List<Stock> stock;
 
     @OneToMany(mappedBy = "drug", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("drug")
+    @JsonIgnore
     private List<Supplier> suppliers;
+
+    @Override
+    public String toString() {
+        return "Drug{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", supplierName='" + supplierName + '\'' +
+                ", totalQuantity=" + totalQuantity +
+                ", active=" + active +
+                ", banned=" + banned +
+                ", bannedReason='" + bannedReason + '\'' +
+                ", stockCount=" + (stock != null ? stock.size() : 0) +
+                ", suppliersCount=" + (suppliers != null ? suppliers.size() : 0) +
+                '}';
+    }
 }
+
