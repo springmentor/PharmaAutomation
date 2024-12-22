@@ -30,13 +30,13 @@ public class StockController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Stock> addStock(@RequestBody Stock stock) {
+    public ResponseEntity<Stock> addStock(@RequestBody Stock stock)throws InvalidEntityException {
         Stock savedStock = stockService.addStock(stock);
         return ResponseEntity.ok(savedStock);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody Stock stockDetails) {
+    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody Stock stockDetails)throws InvalidEntityException {
         Stock updatedStock = stockService.updateStock(id, stockDetails);
         return ResponseEntity.ok(updatedStock);
     }

@@ -1,5 +1,6 @@
 package com.pms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,17 +25,20 @@ public class Prescription {
     @Column(nullable = false)
     private String patientName;
 
-    private boolean isBillGenerated;
-
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("prescription")
     private List<PrescriptionItem> items = new ArrayList<>();
+    @Column(name = "is_bill_generated", nullable = false)
+    private boolean isBillGenerated = false;
 
-    public void setIsBillGenerated(boolean isBillGenerated) {
-        this.isBillGenerated = isBillGenerated;
+    // Other fields and methods
+
+    public boolean isBillGenerated() {
+        return isBillGenerated;
     }
 
-    public boolean getIsBillGenerated() {
-        return this.isBillGenerated;
+    public void setBillGenerated(boolean billGenerated) {
+        this.isBillGenerated = billGenerated;
     }
 
     public void addItem(PrescriptionItem item) {
@@ -47,6 +51,7 @@ public class Prescription {
         item.setPrescription(null);
     }
     @Override
+    @Transient
     public String toString() {
         return "Prescription{" +
                 "id=" + id +
@@ -59,3 +64,4 @@ public class Prescription {
     }
 
 }
+

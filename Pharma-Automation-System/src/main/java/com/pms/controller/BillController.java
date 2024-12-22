@@ -1,5 +1,6 @@
 package com.pms.controller;
 
+import com.pms.exception.InvalidEntityException;
 import com.pms.model.Bill;
 import com.pms.model.Prescription;
 import com.pms.service.BillService;
@@ -36,16 +37,16 @@ public class BillController {
 
     @PostMapping("/generate/{prescriptionId}")
     public ResponseEntity<Bill> generateBill(@PathVariable Long prescriptionId,
-                                             @RequestParam(value = "discountPercentage", defaultValue = "10.0") double discountPercentage) {
+                                             @RequestParam(value = "discountPercentage", defaultValue = "10.0") double discountPercentage)throws InvalidEntityException {
         // Generate the bill
         Bill generatedBill = billService.generateBill(prescriptionId, discountPercentage);
 
         // Update the prescription's bill generated status
         Prescription prescription = prescriptionService.getPrescriptionById(prescriptionId);
-        prescription.setIsBillGenerated(true);
 
         // Save the updated prescription
         prescriptionService.addPrescription(prescription);
+
 
         return ResponseEntity.ok(generatedBill);
     }

@@ -3,6 +3,7 @@ package com.pms.repository;
 import com.pms.model.Drug;
 import com.pms.model.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,9 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 
      @Query("SELECT DISTINCT pi.drug FROM Prescription p JOIN p.items pi WHERE p.prescriptionDate >= :startDate")
      List<Drug> findPrescribedDrugsSince(@Param("startDate") LocalDate startDate);
+     @Modifying
+     @Query("UPDATE Prescription p SET p.isBillGenerated = :status WHERE p.id = :prescriptionId")
+     int updateBillGeneratedStatus(@Param("prescriptionId") Long prescriptionId, @Param("status") boolean status);
  }
 
   

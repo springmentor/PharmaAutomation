@@ -1,5 +1,6 @@
 package com.pms.service;
 
+import com.pms.exception.InvalidEntityException;
 import com.pms.model.Bill;
 import com.pms.model.Prescription;
 import com.pms.model.PrescriptionItem;
@@ -39,14 +40,14 @@ public class BillService {
     }
 
     @Transactional
-    public Bill generateBill(Long prescriptionId, double discountPercentage) {
+    public Bill generateBill(Long prescriptionId, double discountPercentage) throws InvalidEntityException {
         Prescription prescription = prescriptionService.getPrescriptionById(prescriptionId);
 
         if (prescription == null) {
             throw new EntityNotFoundException("Prescription not found with id: " + prescriptionId);
         }
 
-        if (prescription.getIsBillGenerated()) {
+        if (prescription.isBillGenerated()) {
             throw new IllegalStateException("Bill has already been generated for this prescription");
         }
 
@@ -57,16 +58,20 @@ public class BillService {
         double totalAmount = calculateTotalAmount(prescription);
         double discountedAmount = applyDiscount(totalAmount, discountPercentage);
 
+        // Create and save the bill first
         Bill bill = createBill(prescription, totalAmount, discountPercentage, discountedAmount);
-
         Bill savedBill = billRepository.save(bill);
-
+        
         // Update stock quantities
         for (PrescriptionItem item : prescription.getItems()) {
             stockService.updateStockQuantities(item.getDrug().getId(), item.getQuantity());
         }
 
-        prescriptionService.markPrescriptionAsBilled(prescriptionId);
+        // Use direct JPQL update
+        int updatedRows = prescriptionRepository.updateBillGeneratedStatus(prescriptionId, true);
+        if (updatedRows != 1) {
+            throw new RuntimeException("Failed to update prescription status. Expected 1 row updated, got " + updatedRows);
+        }
 
         return savedBill;
     }

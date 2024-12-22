@@ -1,5 +1,6 @@
 package com.pms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class PrescriptionItem {
 
     @ManyToOne
     @JoinColumn(name = "drug_id", nullable = false)
+    @JsonIgnoreProperties("drugs")
     private Drug drug;
 
     @Column(nullable = false)
@@ -20,6 +22,7 @@ public class PrescriptionItem {
 
     @ManyToOne
     @JoinColumn(name = "prescription_id", nullable = false)
+    @JsonIgnoreProperties("prescription")
     private Prescription prescription;
     
     @Override

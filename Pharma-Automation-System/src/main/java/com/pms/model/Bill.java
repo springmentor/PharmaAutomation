@@ -1,5 +1,6 @@
 package com.pms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class Bill {
 
     @OneToOne
     @JoinColumn(name = "prescription_id", nullable = false)
+    @JsonIgnoreProperties("prescription")
     private Prescription prescription;
 
     @Column(nullable = false)

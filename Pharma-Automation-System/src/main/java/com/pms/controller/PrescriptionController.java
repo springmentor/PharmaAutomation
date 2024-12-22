@@ -1,5 +1,6 @@
 package com.pms.controller;
 
+import com.pms.exception.InvalidEntityException;
 import com.pms.model.Drug;
 import com.pms.model.Prescription;
 import com.pms.service.PrescriptionService;
@@ -30,15 +31,16 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescription);
     }
 
-    @PostMapping("/add") 
-    public ResponseEntity<Prescription> addPrescription(@RequestBody Prescription prescription) {
+    @PostMapping("/add")
+    public ResponseEntity<Prescription> addPrescription(@RequestBody Prescription prescription) throws InvalidEntityException {
         Prescription savedPrescription = prescriptionService.addPrescription(prescription);
         return ResponseEntity.ok(savedPrescription);
     }
+
     @DeleteMapping("/delete/{prescriptionId}")
     public ResponseEntity<Void> deletePrescription(@PathVariable Long prescriptionId) {
-            prescriptionService.deletePrescriptionById(prescriptionId);
-            return ResponseEntity.ok().build();
+        prescriptionService.deletePrescriptionById(prescriptionId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
@@ -49,28 +51,43 @@ public class PrescriptionController {
         }
         return ResponseEntity.ok(prescriptions);
     }
-    @GetMapping("/max-prescribed")
-    public ResponseEntity<List<Map.Entry<Drug, Long>>> getMaxPrescribedDrugsForPastYear() {
-        List<Map.Entry<Drug, Long>> maxPrescribedDrugs = prescriptionService.getMaxPrescribedDrugsForPastYear();
-        return ResponseEntity.ok(maxPrescribedDrugs);
-    }
-
-    @GetMapping("/unprescribed")
-    public ResponseEntity<List<Drug>> getUnprescribedDrugsForPastYear() {
-        List<Drug> unprescribedDrugs = prescriptionService.getUnprescribedDrugsForPastYear();
-        return ResponseEntity.ok(unprescribedDrugs);
-    }
 
     @GetMapping("/max-prescribed/{limit}")
-    public ResponseEntity<List<Map.Entry<Drug, Long>>> getMaxPrescribedDrugs(@PathVariable int limit) {
+    public ResponseEntity<List<Map<String, Object>>> getMaxPrescribedDrugs(@PathVariable int limit) {
         List<Map.Entry<Drug, Long>> maxPrescribedDrugs = prescriptionService.getMaxPrescribedDrugs(limit);
-        return ResponseEntity.ok(maxPrescribedDrugs);
+        
+        List<Map<String, Object>> response = maxPrescribedDrugs.stream()
+            .map(entry -> Map.of(
+                "drug", entry.getKey(),
+                "quantity", entry.getValue()
+            ))
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/unprescribed/{days}")
-    public ResponseEntity<List<Drug>> getUnprescribedDrugsForPast(@PathVariable int days) {
-        List<Drug> unprescribedDrugs = prescriptionService.getUnprescribedDrugsForPast(days);
+    public ResponseEntity<List<Drug>> getUnprescribedDrugs(@PathVariable int days) {
+        List<Drug> unprescribedDrugs = prescriptionService.getUnprescribedDrugs(days);
         return ResponseEntity.ok(unprescribedDrugs);
     }
 
+    @GetMapping("/with-bills")
+    public ResponseEntity<List<Prescription>> getPrescriptionsWithGeneratedBills() {
+        List<Prescription> prescriptions = prescriptionService.getPrescriptionsWithGeneratedBills();
+        return ResponseEntity.ok(prescriptions);
+    }
+
+    @GetMapping("/without-bills")
+    public ResponseEntity<List<Prescription>> getPrescriptionsWithoutGeneratedBills() {
+        List<Prescription> prescriptions = prescriptionService.getPrescriptionsWithoutGeneratedBills();
+        return ResponseEntity.ok(prescriptions);
+    }
+
+    @PostMapping("/mark-billed/{prescriptionId}")
+    public ResponseEntity<Void> markPrescriptionAsBilled(@PathVariable Long prescriptionId) {
+        prescriptionService.markPrescriptionAsBilled(prescriptionId);
+        return ResponseEntity.ok().build();
+    }
 }
+

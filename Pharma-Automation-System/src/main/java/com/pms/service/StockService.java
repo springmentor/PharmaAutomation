@@ -1,5 +1,6 @@
 package com.pms.service;
 
+import com.pms.exception.InvalidEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class StockService {
     }
 
     @Transactional
-    public Stock addStock(Stock stock) {
+    public Stock addStock(Stock stock)throws InvalidEntityException {
         if (stock.getDrug() == null || stock.getDrug().getId() == null) {
             throw new IllegalArgumentException("Drug ID must be provided");
         }
@@ -43,30 +44,30 @@ public class StockService {
         Drug drug = drugRepository.findById(stock.getDrug().getId())
             .orElseThrow(() -> new EntityNotFoundException("Drug not found with id: " + stock.getDrug().getId()));
 
-        if (!drug.isActive()) {
-            throw new IllegalStateException("Cannot add stock for inactive drug: " + drug.getName());
+        if (!drug.isActive()||drug.isBanned()) {
+            throw new InvalidEntityException("Cannot add stock for inactive drug: " + drug.getName());
         }
 
         stock.setDrug(drug);
         stock.setAvailableQuantity(stock.getQuantity()); // Set initial available quantity
         Stock savedStock = stockRepository.save(stock);
 
-        drug.setTotalQuantity(drug.getTotalQuantity() + stock.getQuantity());
-        drugRepository.save(drug);
+//        drug.setTotalQuantity(drug.getTotalQuantity() + stock.getQuantity());
+//        drugRepository.save(drug);
 
         return savedStock;
     }
 
     @Transactional
-    public Stock updateStock(Long id, Stock stockDetails) {
+    public Stock updateStock(Long id, Stock stockDetails) throws InvalidEntityException{
         Stock stock = stockRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Stock not found with id: " + id));
 
-        if (!stock.getDrug().isActive()) {
-            throw new IllegalStateException("Cannot update stock for inactive drug: " + stock.getDrug().getName());
+        if (!stock.getDrug().isActive()|| stock.getDrug().isBanned()) {
+            throw new InvalidEntityException("Cannot update stock for inactive drug: " + stock.getDrug().getName());
         }
-        if (!drug.isActive()) {
-            throw new IllegalStateException("Cannot add stock for deactivated drug: " + drug.getName());
+        if (!drug.isActive()||drug.isBanned()) {
+            throw new InvalidEntityException("Cannot add stock for deactivated drug: " + drug.getName());
         }
 
         int quantityDifference = stockDetails.getQuantity() - stock.getQuantity();
@@ -77,9 +78,9 @@ public class StockService {
         stock.setManufacturingDate(stockDetails.getManufacturingDate());
         stock.setThreshold(stockDetails.getThreshold());
 
-        Drug drug = stock.getDrug();
-        drug.setTotalQuantity(drug.getTotalQuantity() + quantityDifference);
-        drugRepository.save(drug);
+//        Drug drug = stock.getDrug();
+//        drug.setTotalQuantity(drug.getTotalQuantity() + quantityDifference);
+//        drugRepository.save(drug);
 
         return stockRepository.save(stock);
     }
@@ -100,7 +101,7 @@ public class StockService {
         stockRepository.delete(stock);
     }
     @Transactional
-    public void updateStockQuantities(Long drugId, int quantityToReduce) {
+    public void updateStockQuantities(Long drugId, int quantityToReduce)throws InvalidEntityException {
         List<Stock> stocks = stockRepository.findByDrugIdOrderByExpiryDateAsc(drugId);
         int remainingQuantity = quantityToReduce;
 
@@ -119,7 +120,7 @@ public class StockService {
         }
 
         if (remainingQuantity > 0) {
-            throw new IllegalStateException("Insufficient stock to fulfill the prescription");
+            throw new InvalidEntityException("Insufficient stock to fulfill the prescription");
         }
 
 //        // Update the total quantity for the drug
