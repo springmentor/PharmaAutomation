@@ -1,43 +1,47 @@
 package com.pas.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "prescriptions")
 public class Prescription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long prescriptionId;
+    private int prescriptionId;
 
-    @Column(nullable = false)
+    @NotNull(message = "Patient name cannot be null.")
     private String patientName;
 
-    @Column(nullable = false)
+    @NotNull(message = "Doctor name cannot be null.")
     private String doctorName;
 
-    @Column(nullable = false)
+    @NotNull(message = "Prescribed date cannot be null.")
     private LocalDate prescribedDate;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "prescription_id")
+    private List<Stock> stocks;
 
-    // Constructors
+    // Default constructor
     public Prescription() {}
 
-    public Prescription(String patientName, String doctorName, LocalDate prescribedDate) {
+    // Parameterized constructor
+    public Prescription(String patientName, String doctorName, LocalDate prescribedDate, List<Stock> stocks) {
         this.patientName = patientName;
         this.doctorName = doctorName;
         this.prescribedDate = prescribedDate;
+        this.stocks = stocks;
     }
 
-    // Getters and setters
-    public Long getPrescriptionId() {
+    // Getters and Setters
+    public int getPrescriptionId() {
         return prescriptionId;
     }
 
-    public void setPrescriptionId(Long prescriptionId) {
+    public void setPrescriptionId(int prescriptionId) {
         this.prescriptionId = prescriptionId;
     }
 
@@ -65,5 +69,11 @@ public class Prescription {
         this.prescribedDate = prescribedDate;
     }
 
-}
+    public List<Stock> getStocks() {
+        return stocks;
+    }
 
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
+}
