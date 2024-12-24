@@ -105,7 +105,6 @@ public class StockService {
             throw new IllegalArgumentException("Drug ID: " + drugId + " not found.");
         }
     }
-<<<<<<< HEAD
 
     public void increaseStock(int drugId, int quantity) {
         Drug drug = drugRepository.findById(drugId).orElse(null);
@@ -118,8 +117,6 @@ public class StockService {
             throw new IllegalArgumentException("Drug ID: " + drugId + " not found.");
         }
     }
-=======
->>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
 
     public String sendReorderNotification() {
         // Retrieve all stocks below the threshold
@@ -148,11 +145,7 @@ public class StockService {
     }
 
     // Scheduled task to send reorder notifications every 5 seconds
-<<<<<<< HEAD
     @Scheduled(cron = "*/700000000 * * *  * ?")
-=======
-    @Scheduled(cron = "*/5 * * * * ?")
->>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
     public void scheduledReorderNotification() {
         sendReorderNotification();
         System.out.println("Reorder notifications sent.");
