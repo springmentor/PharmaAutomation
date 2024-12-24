@@ -1,9 +1,12 @@
 package com.pas.model;
 
 import java.time.LocalDate;
+<<<<<<< HEAD
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+=======
+>>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -28,7 +31,10 @@ public class Billing {
 
     @OneToOne
     @JoinColumn(name = "prescription_id")
+<<<<<<< HEAD
     @JsonBackReference
+=======
+>>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
     private Prescription prescription;
 
     // Default constructor

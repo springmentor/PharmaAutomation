@@ -1,11 +1,15 @@
 package com.pas.model;
 
 import java.time.LocalDate;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+=======
+import java.util.List;
+>>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,6 +28,7 @@ public class Prescription {
     @NotNull(message = "Prescribed date cannot be null.")
     private LocalDate prescribedDate;
 
+<<<<<<< HEAD
     @ElementCollection
     @CollectionTable(name = "prescription_drugs",
         joinColumns = @JoinColumn(name = "prescription_id"))
@@ -62,6 +67,31 @@ public class Prescription {
 	public int getPrescriptionId() {
 		return prescriptionId;
 	}
+=======
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "prescription_id")
+    private List<Stock> stocks;
+
+    // Default constructor
+    public Prescription() {}
+
+    // Parameterized constructor
+    public Prescription(String patientName, String doctorName, LocalDate prescribedDate, List<Stock> stocks) {
+        this.patientName = patientName;
+        this.doctorName = doctorName;
+        this.prescribedDate = prescribedDate;
+        this.stocks = stocks;
+    }
+
+    // Getters and Setters
+    public int getPrescriptionId() {
+        return prescriptionId;
+    }
+
+    public void setPrescriptionId(int prescriptionId) {
+        this.prescriptionId = prescriptionId;
+    }
+>>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
 
 	public void setPrescriptionId(int prescriptionId) {
 		this.prescriptionId = prescriptionId;
@@ -87,6 +117,7 @@ public class Prescription {
 		return prescribedDate;
 	}
 
+<<<<<<< HEAD
 	public void setPrescribedDate(LocalDate prescribedDate) {
 		this.prescribedDate = prescribedDate;
 	}
@@ -110,3 +141,13 @@ public class Prescription {
 	        }
 	}
 }
+=======
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
+}
+>>>>>>> 0b44b1b699e7b5ab20af7f380b908f76be024f7b
