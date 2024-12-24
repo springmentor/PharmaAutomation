@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2D3436;
+            --secondary-color: #0984E3;
+            --accent-color: #00B894;
+            --gradient-1: #6C5CE7;
+            --gradient-2: #a363d9;
+            --light-color: #F8F9FA;
+            --dark-color: #2D3436;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, rgba(45, 52, 54, 0.95), rgba(9, 132, 227, 0.95));
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 15px;
+            position: relative;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.85), rgba(0, 184, 148, 0.85)),
+                        url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 180px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stats-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .table th, .table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--accent-color);
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .stock-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-normal {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .status-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .status-danger {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+   .btn-turquoise {
+        background-color: #1abc9c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 12px;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+   }
+
+   .btn-turquoise:hover {
+         background-color: #16a085;
+         transform: translateY(-2px);
+   }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/pharma">
+            <i class="fas fa-clinic-medical me-2"></i>PharmaCore
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/drugs">
+                        <i class="fas fa-pills me-1"></i>Drug Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stocks">
+                        <i class="fas fa-boxes me-1"></i>Stock Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/prescriptions">
+                        <i class="fas fa-receipt me-1"></i>Prescription & Billing
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/suppliers">
+                        <i class="fas fa-users me-1"></i>Supplier Management
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div>
+        <h1>Manage Your Stock Efficiently</h1>
+        <p class="lead">Track, manage, and optimize your pharmacy inventory</p>
+    </div>
+</div>
+<div class="container mt-5">
+    <!-- Success and Error Messages -->
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Search Box -->
+        <div class="search-box" style="width: 60%; height: 40px; border: 1px solid #ccc; padding: 5px; border-radius: 5px; display: flex; align-items: center;">
+            <i class="fas fa-search me-2" style="color: #888;"></i>
+            <!-- Wrap the input in a form tag -->
+            <form action="/stocks" method="get" style="flex-grow: 1; box-shadow: none; width: 100%; height: 100%;">
+                <input type="text" name="query" class="form-control border-0" placeholder="Search drugs..." style="flex-grow: 1; height: 100%;">
+                <button type="submit" style="display: none;"></button> <!-- Invisible submit button -->
+            </form>
+        </div>
+        <!-- Add New Stock Button -->
+        <div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStockModal" style="margin-left:7rem;">
+                <i class="bi bi-plus-circle me-2"></i>Add New Stock
+            </button>
+        </div>
+        <!-- Filter Dropdown -->
+        <div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:1rem;">
+                    Filter Stocks
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/stocks/filter?filter=none">No filter</a></li>
+                    <li><a class="dropdown-item" href="/stocks/filter?filter=expiry_date">Filter by Expiry Date</a></li>
+                    <li><a class="dropdown-item" href="/stocks/filter?filter=below_threshold">View Stocks Below Threshold</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- All Stocks Table -->
+    <div id="allStocksTable">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Stock ID</th>
+                <th>Drug Name</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Manufacturing Date</th>
+                <th>Threshold</th>
+                <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stock : ${stocks}">
+                <td th:text="${stock.id}"></td>
+                <td th:text="${stock.drug.name}"></td>
+                <td th:text="${stock.quantity}"></td>
+                <td th:text="${#temporals.format(stock.expiryDate, 'dd-MM-yyyy')}"></td>
+                <td th:text="${#temporals.format(stock.manufacturingDate, 'dd-MM-yyyy')}"></td>
+                <td th:text="${stock.threshold}"></td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-primary" th:onclick="'showUpdateStockModal(' + ${stock.id} + ')'">
+                        <i class="bi bi-pencil-square"></i> Update
+                    </button>
+                    <button type="button" class="btn btn-sm btn-turquoise" th:onclick="'deleteStock(' + ${stock.id} + ')'">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Add Stock Modal -->
+    <div class="modal fade" id="addStockModal" tabindex="-1" aria-labelledby="addStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStockModalLabel">Add New Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStockForm" th:action="@{/stocks/add}" method="post">
+                        <div class="mb-3">
+                            <label for="drug" class="form-label">Drug</label>
+                            <select class="form-select" id="drug" name="drug.id" required>
+                                <option value="">Select a drug</option>
+                                <option th:each="drug : ${drugs}" th:value="${drug.id}" th:text="${drug.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expiryDate" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="expiryDate" name="expiryDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="manufacturingDate" class="form-label">Manufacturing Date</label>
+                            <input type="date" class="form-control" id="manufacturingDate" name="manufacturingDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="threshold" class="form-label">Threshold</label>
+                            <input type="number" class="form-control" id="threshold" name="threshold" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitAddStockForm()">Add Stock</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Update Stock Modal -->
+    <div class="modal fade" id="updateStockModal" tabindex="-1" aria-labelledby="updateStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStockModalLabel">Update Stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStockForm" th:action="@{/stocks/update}" method="post">
+                        <input type="hidden" id="updateStockId" name="id">
+                        <div class="mb-3">
+                            <label for="updateQuantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="updateQuantity" name="quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateThreshold" class="form-label">Threshold</label>
+                            <input type="number" class="form-control" id="updateThreshold" name="threshold" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateExpiryDate" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control" id="updateExpiryDate" name="expiryDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateManufacturingDate" class="form-label">Manufacturing Date</label>
+                            <input type="date" class="form-control" id="updateManufacturingDate" name="manufacturingDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitUpdateStockForm()">Update Stock</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set min date for expiry date (tomorrow)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('expiryDate').min = tomorrow.toISOString().split('T')[0];
+
+            // Set max date for manufacturing date (today)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('manufacturingDate').max = today;
+
+            const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+            const thresholdInputs = document.querySelectorAll('input[name="threshold"]');
+
+            quantityInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    validatePositiveNumber(this, 'Quantity');
+                });
+            });
+
+            thresholdInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    validatePositiveNumber(this, 'Threshold');
+                });
+            });
+        });
+
+        function showUpdateStockModal(id) {
+            const stocks = /*[[${stocks}]]*/ [];
+            const stock = stocks.find(s => s.id == id);
+            if (stock) {
+                document.getElementById('updateStockId').value = stock.id;
+                document.getElementById('updateQuantity').value = stock.quantity;
+                document.getElementById('updateThreshold').value = stock.threshold;
+                document.getElementById('updateExpiryDate').value = stock.expiryDate;
+                document.getElementById('updateManufacturingDate').value = stock.manufacturingDate;
+                const updateStockModal = new bootstrap.Modal(document.getElementById('updateStockModal'));
+                updateStockModal.show();
+            } else {
+                console.error('Stock not found');
+            }
+        }
+
+        function submitAddStockForm() {
+            const form = document.getElementById('addStockForm');
+            if (validateStockForm(form)) {
+                form.submit();
+            }
+        }
+
+        function submitUpdateStockForm() {
+            const form = document.getElementById('updateStockForm');
+            if (validateStockForm(form)) {
+                form.submit();
+            }
+        }
+
+        function deleteStock(id) {
+            if (confirm('Are you sure you want to delete this stock?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = /*[[@{/stocks/delete}]]*/ '';
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = id;
+                form.appendChild(idInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+
+
+        function validateStockForm(form) {
+            const quantity = parseInt(form.quantity.value);
+            const threshold = parseInt(form.threshold.value);
+            const expiryDate = new Date(form.expiryDate.value);
+            const manufacturingDate = new Date(form.manufacturingDate.value);
+            const today = new Date();
+
+            if (isNaN(quantity) || quantity <= 0) {
+                alert('Quantity must be greater than 0.');
+                return false;
+            }
+
+            if (isNaN(threshold) || threshold <= 0) {
+                alert('Threshold must be greater than 0.');
+                return false;
+            }
+
+            if (expiryDate <= today) {
+                alert('Expiry date must be in the future.');
+                return false;
+            }
+
+            if (manufacturingDate > today) {
+                alert('Manufacturing date cannot be in the future.');
+                return false;
+            }
+
+            if (manufacturingDate >= expiryDate) {
+                alert('Manufacturing date must be before the expiry date.');
+                return false;
+            }
+
+            return true;
+        }
+
+        function validatePositiveNumber(input, fieldName) {
+            const value = parseInt(input.value);
+            if (isNaN(value) || value <= 0) {
+                input.setCustomValidity(`${fieldName} must be greater than 0`);
+            } else {
+                input.setCustomValidity('');
+            }
+            input.reportValidity();
+        }
+
+        function toggleBelowThresholdView() {
+            const allStocksTable = document.getElementById('allStocksTable');
+            const belowThresholdTable = document.getElementById('belowThresholdTable');
+            const viewBelowThresholdButton = document.querySelector('button[onclick="toggleBelowThresholdView()"]');
+
+            if (allStocksTable.style.display === 'none') {
+                allStocksTable.style.display = 'block';
+                belowThresholdTable.style.display = 'none';
+                viewBelowThresholdButton.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>View Stocks Below Threshold';
+            } else {
+                allStocksTable.style.display = 'none';
+                belowThresholdTable.style.display = 'block';
+                viewBelowThresholdButton.innerHTML = '<i class="bi bi-list me-2"></i>View All Stocks';
+            }
+        }
+    /*]]>*/
+</script>
+</body>
+</html>
