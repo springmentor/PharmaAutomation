@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Bill</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .container {
+                width: 100%;
+                max-width: none;
+            }
+        }
+        .bill-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .bill-details {
+            margin-bottom: 20px;
+        }
+        .bill-footer {
+            margin-top: 30px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="bill-header">
+            <h2>Pharma Automation System</h2>
+            <p>Medical Bill</p>
+        </div>
+
+        <div class="bill-details">
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>Bill No:</strong> <span th:text="${billing.billingId}"></span></p>
+                    <p><strong>Date:</strong> <span th:text="${#temporals.format(billing.billingDate, 'dd-MM-yyyy')}"></span></p>
+                </div>
+                <div class="col-6">
+                    <p><strong>Patient Name:</strong> <span th:text="${billing.prescription.patientName}"></span></p>
+                    <p><strong>Doctor Name:</strong> <span th:text="${billing.prescription.doctorName}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Drug Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry : ${billing.prescription.prescribedDrugs}">
+                    <td th:text="${entry.key}"></td>
+                    <td th:text="${entry.value}"></td>
+                    <td th:text="${#numbers.formatDecimal(entry.unitPrice, 1, 2)}"></td>
+                    <td th:text="${#numbers.formatDecimal(entry.value * entry.unitPrice, 1, 2)}"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
+                    <td th:text="${#numbers.formatDecimal(billing.totalAmount, 1, 2)}"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Discount:</strong></td>
+                    <td th:text="${#numbers.formatDecimal(billing.discount, 1, 2)}"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Final Amount:</strong></td>
+                    <td th:text="${#numbers.formatDecimal(billing.finalAmount, 1, 2)}"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="bill-footer">
+            <p>Thank you for your business!</p>
+        </div>
+
+        <div class="text-center mt-4 no-print">
+            <button onclick="window.print()" class="btn btn-primary">Print Bill</button>
+            <button onclick="window.close()" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

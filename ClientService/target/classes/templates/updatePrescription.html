@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Prescription</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Update Prescription
+            </div>
+            <div class="card-body">
+                <form th:action="@{/updatePrescription/{prescriptionId}(prescriptionId=${prescription.prescriptionId})}" method="post">
+                    <input type="hidden" name="prescriptionId" th:value="${prescription.prescriptionId}">
+                    <div class="mb-3">
+                        <label class="form-label">Patient Name: <span th:text="${prescription.patientName}"></span></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Doctor Name: <span th:text="${prescription.doctorName}"></span></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prescribed Date: <span th:text="${prescription.prescribedDate}"></span></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prescribed Drugs:</label>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Drug Name</th>
+                                    <th>Prescribed Quantity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry : ${prescription.prescribedDrugs}">
+                                    <td th:text="${entry.key}"></td>
+                                    <td>
+                                        <input type="number" th:name="'quantities[' + ${entry.key} + ']'" 
+                                               th:value="${entry.value}" min="1" class="form-control" required>
+                                    </td>
+                                    <td>
+                                        <button type="submit" name="action" th:value="'remove_' + ${entry.key}" 
+                                                class="btn btn-danger btn-sm">Remove</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newDrug" class="form-label">Add New Drug:</label>
+                        <select class="form-select" id="newDrug" name="newDrugId">
+                            <option value="">Select a drug to add</option>
+                            <option th:each="stock : ${availableStocks}" 
+                                    th:value="${stock.stockId}" 
+                                    th:text="${stock.drug.drugName + ' - Batch: ' + stock.stockId + ' - Available: ' + stock.receivedQuantity}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newQuantity" class="form-label">Quantity for New Drug:</label>
+                        <input type="number" class="form-control" id="newQuantity" name="newQuantity" min="1">
+                    </div>
+                    <button type="submit" class="btn btn-success" name="action" value="update">Update Prescription</button>
+                    <a href="/viewPrescriptions" class="btn btn-secondary">Back to Prescription List</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

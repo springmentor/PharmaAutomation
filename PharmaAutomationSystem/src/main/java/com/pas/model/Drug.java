@@ -1,9 +1,8 @@
 package com.pas.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Drug {
@@ -11,18 +10,26 @@ public class Drug {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int drugId;
+
+    @NotBlank(message = "Drug name cannot be blank")
     private String drugName;
+
     private String status;
+
+    @Min(value = 0, message = "Total quantity cannot be negative")
     private int totalQuantity;
 
-    // Default constructor
+    @Min(value = 0, message = "Unit price cannot be negative")
+    private double unitPrice;
+
+    // Constructors
     public Drug() {}
 
-    // Constructor with parameters
-    public Drug(String drugName, String status, int totalQuantity) {
+    public Drug(String drugName, String status, int totalQuantity, double unitPrice) {
         this.drugName = drugName;
         this.status = status;
         this.totalQuantity = totalQuantity;
+        this.unitPrice = unitPrice;
     }
 
     // Getters and Setters
@@ -57,4 +64,13 @@ public class Drug {
     public void setTotalQuantity(int totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
 }
+

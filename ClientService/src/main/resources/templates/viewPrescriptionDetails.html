@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Prescription Details
+            </div>
+            <div class="card-body">
+                <!-- Prescription Information -->
+                <div class="mb-4">
+                    <h5 class="card-title">Prescription ID: <span th:text="${prescription.prescriptionId}"></span></h5>
+                    <p class="card-text">Patient Name: <span th:text="${prescription.patientName}"></span></p>
+                    <p class="card-text">Doctor Name: <span th:text="${prescription.doctorName}"></span></p>
+                    <p class="card-text">Prescribed Date: <span th:text="${#temporals.format(prescription.prescribedDate, 'dd-MM-yyyy')}"></span></p>
+                </div>
+
+                <!-- Prescribed Drugs Table -->
+                <div class="table-responsive">
+                    <h6 class="mb-3">Prescribed Medications</h6>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Drug Name</th>
+                                <th>Prescribed Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entry : ${prescription.prescribedDrugs}">
+                                <td th:text="${drugDetails.get(entry.key).drugName}"></td>
+                                <td th:text="${entry.value}"></td>
+                                <td th:text="${#numbers.formatDecimal(drugDetails.get(entry.key).unitPrice, 1, 2)}"></td>
+                                <td th:text="${#numbers.formatDecimal(drugDetails.get(entry.key).unitPrice * entry.value, 1, 2)}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-4">
+                    <a href="/viewPrescriptions" class="btn btn-secondary">Back to Prescription List</a>
+                    <a th:href="@{/updatePrescription/{id}(id=${prescription.prescriptionId})}" class="btn btn-warning">Edit Prescription</a>
+                    <a th:href="@{/generateBill/{id}(id=${prescription.prescriptionId})}" class="btn btn-primary">Generate Bill</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

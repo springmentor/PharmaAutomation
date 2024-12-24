@@ -1,69 +1,112 @@
 package com.pas.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "prescriptions")
 public class Prescription {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long prescriptionId;
+    private int prescriptionId;
 
-    @Column(nullable = false)
+    @NotNull(message = "Patient name cannot be null.")
     private String patientName;
 
-    @Column(nullable = false)
+    @NotNull(message = "Doctor name cannot be null.")
     private String doctorName;
 
-    @Column(nullable = false)
+    @NotNull(message = "Prescribed date cannot be null.")
     private LocalDate prescribedDate;
 
+    @ElementCollection
+    @CollectionTable(name = "prescription_drugs",
+        joinColumns = @JoinColumn(name = "prescription_id"))
+    @MapKeyColumn(name = "drug_id")
+    @Column(name = "prescribed_quantity")
+    private Map<Integer, Integer> prescribedDrugs = new HashMap<>();
 
-    // Constructors
-    public Prescription() {}
+    @OneToOne(mappedBy = "prescription", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Billing billing;
 
-    public Prescription(String patientName, String doctorName, LocalDate prescribedDate) {
-        this.patientName = patientName;
-        this.doctorName = doctorName;
-        this.prescribedDate = prescribedDate;
+    // Constructors, getters, and setters
+
+    public Prescription(){}
+    public Prescription(int prescriptionId, @NotNull(message = "Patient name cannot be null.") String patientName,
+			@NotNull(message = "Doctor name cannot be null.") String doctorName,
+			@NotNull(message = "Prescribed date cannot be null.") LocalDate prescribedDate,
+			Map<Integer, Integer> prescribedDrugs, Billing billing) {
+		super();
+		this.prescriptionId = prescriptionId;
+		this.patientName = patientName;
+		this.doctorName = doctorName;
+		this.prescribedDate = prescribedDate;
+		this.prescribedDrugs = prescribedDrugs;
+		this.billing = billing;
+	}
+
+	public void addOrUpdatePrescribedDrug(Integer drugId, Integer quantity) {
+        this.prescribedDrugs.put(drugId, quantity);
     }
 
-    // Getters and setters
-    public Long getPrescriptionId() {
-        return prescriptionId;
+    public void removePrescribedDrug(Integer drugId) {
+        this.prescribedDrugs.remove(drugId);
     }
 
-    public void setPrescriptionId(Long prescriptionId) {
-        this.prescriptionId = prescriptionId;
-    }
+	public int getPrescriptionId() {
+		return prescriptionId;
+	}
 
-    public String getPatientName() {
-        return patientName;
-    }
+	public void setPrescriptionId(int prescriptionId) {
+		this.prescriptionId = prescriptionId;
+	}
 
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
+	public String getPatientName() {
+		return patientName;
+	}
 
-    public String getDoctorName() {
-        return doctorName;
-    }
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
 
-    public void setDoctorName(String doctorName) {
-        this.doctorName = doctorName;
-    }
+	public String getDoctorName() {
+		return doctorName;
+	}
 
-    public LocalDate getPrescribedDate() {
-        return prescribedDate;
-    }
+	public void setDoctorName(String doctorName) {
+		this.doctorName = doctorName;
+	}
 
-    public void setPrescribedDate(LocalDate prescribedDate) {
-        this.prescribedDate = prescribedDate;
-    }
+	public LocalDate getPrescribedDate() {
+		return prescribedDate;
+	}
 
+	public void setPrescribedDate(LocalDate prescribedDate) {
+		this.prescribedDate = prescribedDate;
+	}
+
+	public Map<Integer, Integer> getPrescribedDrugs() {
+		return prescribedDrugs;
+	}
+
+	public void setPrescribedDrugs(Map<Integer, Integer> prescribedDrugs) {
+		this.prescribedDrugs = prescribedDrugs;
+	}
+
+	public Billing getBilling() {
+		return billing;
+	}
+
+	public void setBilling(Billing billing) {
+		  this.billing = billing;
+	        if (billing != null) {
+	            billing.setPrescription(this);
+	        }
+	}
 }
-

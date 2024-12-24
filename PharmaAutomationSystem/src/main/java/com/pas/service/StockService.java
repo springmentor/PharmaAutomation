@@ -3,8 +3,6 @@ package com.pas.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +89,34 @@ public class StockService {
         }
     }
 
-    
+    public void reduceStock(int drugId, int quantity) {
+        Drug drug = drugRepository.findById(drugId).orElse(null);
+
+        if (drug != null) {
+            int newQuantity = drug.getTotalQuantity() - quantity;
+
+            if (newQuantity < 0) {
+                throw new IllegalArgumentException("Not enough stock for drug ID: " + drugId);
+            }
+
+            drug.setTotalQuantity(newQuantity);
+            drugRepository.save(drug);
+        } else {
+            throw new IllegalArgumentException("Drug ID: " + drugId + " not found.");
+        }
+    }
+
+    public void increaseStock(int drugId, int quantity) {
+        Drug drug = drugRepository.findById(drugId).orElse(null);
+
+        if (drug != null) {
+            int newQuantity = drug.getTotalQuantity() + quantity;
+            drug.setTotalQuantity(newQuantity);
+            drugRepository.save(drug);
+        } else {
+            throw new IllegalArgumentException("Drug ID: " + drugId + " not found.");
+        }
+    }
 
     public String sendReorderNotification() {
         // Retrieve all stocks below the threshold
@@ -119,13 +144,10 @@ public class StockService {
         return "Mail sent";
     }
 
-
-
-    // Scheduled task to send reorder notifications daily at noon
-    @Scheduled(cron = "*/5 * * * * ?")
+    // Scheduled task to send reorder notifications every 5 seconds
+    @Scheduled(cron = "*/700000000 * * *  * ?")
     public void scheduledReorderNotification() {
         sendReorderNotification();
         System.out.println("Reorder notifications sent.");
     }
-
 }

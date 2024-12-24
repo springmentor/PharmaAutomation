@@ -1,8 +1,8 @@
 package com.pas.model;
 
-import java.time.LocalDate;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.*;
+import java.time.LocalDate;
 
 @Entity
 public class Stock {
@@ -19,33 +19,33 @@ public class Stock {
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
 
+    @Min(value = 0, message = "Received quantity cannot be negative")
     private int receivedQuantity;
 
+    @NotNull(message = "Received date cannot be null")
     private LocalDate receivedDate;
 
     private LocalDate manufacturingDate;
 
-    @jakarta.validation.constraints.NotNull(message = "Expiry date cannot be null.")
-    @FutureOrPresent(message = "Expiry date must be in the future or today.")
+    @NotNull(message = "Expiry date cannot be null")
+    @Future(message = "Expiry date must be in the future")
     private LocalDate expiryDate;
 
-    private double unitPrice;
-
+    @Min(value = 0, message = "Threshold quantity cannot be negative")
     private int thresholdQuantity;
 
-    // Default constructor
+    // Constructors
     public Stock() {}
 
-    // Parameterized constructor
     public Stock(Drug drug, Supplier supplier, int receivedQuantity, LocalDate receivedDate, 
-                 LocalDate manufacturingDate, LocalDate expiryDate, double unitPrice) {
+                 LocalDate manufacturingDate, LocalDate expiryDate, int thresholdQuantity) {
         this.drug = drug;
         this.supplier = supplier;
         this.receivedQuantity = receivedQuantity;
         this.receivedDate = receivedDate;
         this.manufacturingDate = manufacturingDate;
         this.expiryDate = expiryDate;
-        this.unitPrice = unitPrice;
+        this.thresholdQuantity = thresholdQuantity;
     }
 
     // Getters and Setters
@@ -63,9 +63,6 @@ public class Stock {
 
     public void setDrug(Drug drug) {
         this.drug = drug;
-        if (drug != null) {
-            drug.setTotalQuantity(drug.getTotalQuantity() + this.receivedQuantity);
-        }
     }
 
     public Supplier getSupplier() {
@@ -82,9 +79,6 @@ public class Stock {
 
     public void setReceivedQuantity(int receivedQuantity) {
         this.receivedQuantity = receivedQuantity;
-        if (this.drug != null) {
-            this.drug.setTotalQuantity(this.drug.getTotalQuantity() + receivedQuantity);
-        }
     }
 
     public LocalDate getReceivedDate() {
@@ -111,14 +105,6 @@ public class Stock {
         this.expiryDate = expiryDate;
     }
 
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public int getThresholdQuantity() {
         return thresholdQuantity;
     }
@@ -127,3 +113,4 @@ public class Stock {
         this.thresholdQuantity = thresholdQuantity;
     }
 }
+

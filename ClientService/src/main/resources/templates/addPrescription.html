@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Prescription</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Add New Prescription
+            </div>
+            <div class="card-body">
+                <form th:action="@{/addPrescription}" method="post">
+                    <div class="mb-3">
+                        <label for="patientName" class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="patientName" name="patientName" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="doctorName" class="form-label">Doctor Name</label>
+                        <input type="text" class="form-control" id="doctorName" name="doctorName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="prescribedDate" class="form-label">Prescribed Date</label>
+                        <input type="date" class="form-control" id="prescribedDate" name="prescribedDate" required>
+                    </div>
+
+                    <div id="drugsContainer">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                Prescribed Drugs
+                            </div>
+                            <div class="card-body">
+                                <div class="prescribed-drug mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Drug</label>
+                                            <select class="form-select" name="drugIds[]" required>
+                                                <option value="">Select Drug</option>
+                                                <option th:each="drug : ${drugs}" 
+                                                        th:value="${drug.drugId}" 
+                                                        th:text="${drug.drugName}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="number" class="form-control" name="quantities[]" required min="1">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button type="button" class="btn btn-danger form-control remove-drug">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-secondary" id="addDrug">Add Another Drug</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Create Prescription</button>
+                    <a href="/viewPrescriptions" class="btn btn-secondary">Back to Prescriptions</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('addDrug').addEventListener('click', function() {
+            const container = document.querySelector('.prescribed-drug');
+            const clone = container.cloneNode(true);
+            
+            // Clear the values in the cloned element
+            clone.querySelector('select').value = '';
+            clone.querySelector('input[type="number"]').value = '';
+            
+            // Add the clone to the container
+            document.querySelector('.card-body').appendChild(clone);
+        });
+
+        document.querySelector('.card-body').addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-drug')) {
+                const drugs = document.querySelectorAll('.prescribed-drug');
+                if (drugs.length > 1) {
+                    e.target.closest('.prescribed-drug').remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

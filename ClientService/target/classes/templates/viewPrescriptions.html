@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Prescriptions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Pharma Automation System</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                Prescription List
+                <a href="/addPrescription" class="btn btn-success btn-sm float-end">Add New Prescription</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Prescription ID</th>
+                            <th>Patient Name</th>
+                            <th>Doctor Name</th>
+                            <th>Prescribed Date</th>
+                            <th>Prescribed Drugs</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="prescription : ${prescriptions}">
+                            <td th:text="${prescription.prescriptionId}"></td>
+                            <td th:text="${prescription.patientName}"></td>
+                            <td th:text="${prescription.doctorName}"></td>
+                            <td th:text="${prescription.prescribedDate}"></td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    <li th:each="entry : ${prescription.prescribedDrugs}">
+                                        <span th:text="${entry.key}"></span>: 
+                                        <span th:text="${entry.value}"></span> units
+                                    </li>
+                                </ul>
+                            </td>
+                            <td>
+                                <form th:action="@{/generateBill/{id}(id=${prescription.prescriptionId})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Generate Bill</button>
+                                </form>
+                                <a th:href="@{/updatePrescription/{prescriptionId}(prescriptionId=${prescription.prescriptionId})}" class="btn btn-warning btn-sm">Edit</a>
+                                <form th:action="@{/deletePrescription/{id}(id=${prescription.prescriptionId})}" 
+                                      method="post" style="display:inline;" 
+                                      onsubmit="return confirm('Are you sure you want to delete this prescription?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div th:if="${#lists.isEmpty(prescriptions)}" class="alert alert-info">
+                    No prescription records available.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

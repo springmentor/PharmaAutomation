@@ -1,14 +1,19 @@
 package com.pas.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import com.pas.model.Billing;
 import com.pas.model.Drug;
+import com.pas.model.Prescription;
 import com.pas.model.Stock;
 import com.pas.model.Supplier;
 
@@ -464,5 +471,487 @@ public class ClientController {
             model.addAttribute("errorMessage", "Failed to delete Supplier");
         }
         return "statuspage";
+    }
+//    
+// // Prescription Management
+//
+//    @GetMapping("/prescriptions")
+//    public String prescriptionsHome() {
+//        return "prescriptionindex";
+//    }
+//
+//    @GetMapping("/addPrescription")
+//    public String addPrescriptionPage(Model model) {
+//        // Create new prescription object
+//        model.addAttribute("prescription", new Prescription());
+//        
+//        // Fetch available stocks from the service
+//        String url = SERVICE_URL + "/getAllStocks";
+//        ResponseEntity<List<Stock>> response = restTemplate().exchange(
+//            url, 
+//            HttpMethod.GET, 
+//            null, 
+//            new ParameterizedTypeReference<List<Stock>>() {}
+//        );
+//        List<Stock> availableStocks = response.getBody();
+//        
+//        // Add stocks to the model
+//        model.addAttribute("availableStocks", availableStocks);
+//        
+//        return "addPrescription";
+//    }
+//
+//    @PostMapping("/addPrescription")
+//    public String submitAddPrescriptionForm(
+//        @RequestParam String patientName,
+//        @RequestParam String doctorName,
+//        @RequestParam LocalDate prescribedDate,
+//        @RequestParam(required = false) List<Integer> selectedStocks,
+//        @RequestParam Map<String, String> quantities,
+//        Model model) {
+//        
+//        try {
+//            if (selectedStocks == null || selectedStocks.isEmpty()) {
+//                model.addAttribute("errorMessage", "Please select at least one drug");
+//                return "addPrescription";
+//            }
+//
+//            // Create new prescription
+//            Prescription prescription = new Prescription();
+//            prescription.setPatientName(patientName);
+//            prescription.setDoctorName(doctorName);
+//            prescription.setPrescribedDate(prescribedDate);
+//
+//            List<Stock> prescribedStocks = new ArrayList<>();
+//            Map<Integer, Integer> prescribedQuantities = new HashMap<>();
+//
+//            // Process each selected stock and its quantity
+//            for (Integer stockId : selectedStocks) {
+//                // Get the quantity for this stock
+//                String quantityKey = "quantities[" + stockId + "]";
+//                if (!quantities.containsKey(quantityKey)) {
+//                    continue;
+//                }
+//
+//                int prescribedQuantity = Integer.parseInt(quantities.get(quantityKey));
+//
+//                // Fetch the stock
+//                String stockUrl = SERVICE_URL + "/getStock/" + stockId;
+//                ResponseEntity<Stock> stockResponse = restTemplate().exchange(
+//                    stockUrl,
+//                    HttpMethod.GET,
+//                    null,
+//                    Stock.class
+//                );
+//                Stock stock = stockResponse.getBody();
+//
+//                if (stock == null) {
+//                    model.addAttribute("errorMessage", "Stock not found: " + stockId);
+//                    return "addPrescription";
+//                }
+//
+//                // Validate quantity
+//                if (prescribedQuantity > stock.getReceivedQuantity()) {
+//                    model.addAttribute("errorMessage", 
+//                        "Prescribed quantity exceeds available stock for " + stock.getDrug().getDrugName());
+//                    return "addPrescription";
+//                }
+//
+//                // Update stock quantity
+//                int newQuantity = stock.getReceivedQuantity() - prescribedQuantity;
+//                stock.setReceivedQuantity(newQuantity);
+//
+//                // Update the stock in the backend
+//                String updateStockUrl = SERVICE_URL + "/updateStock/" + stockId;
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.setContentType(MediaType.APPLICATION_JSON);
+//                HttpEntity<Stock> updateStockRequest = new HttpEntity<>(stock, headers);
+//                restTemplate().exchange(
+//                    updateStockUrl,
+//                    HttpMethod.PUT,
+//                    updateStockRequest,
+//                    Stock.class
+//                );
+//
+//                // Add to prescription
+//                prescribedStocks.add(stock);
+//                prescribedQuantities.put(stockId, prescribedQuantity);
+//            }
+//
+//            // Set the stocks and quantities
+//            prescription.setStocks(prescribedStocks);
+//            prescription.setPrescribedQuantities(prescribedQuantities);
+//
+//            // Save the prescription
+//            String prescriptionUrl = SERVICE_URL + "/prescriptions/addPrescription";
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            HttpEntity<Prescription> prescriptionRequest = new HttpEntity<>(prescription, headers);
+//            
+//            ResponseEntity<String> response = restTemplate().exchange(
+//                prescriptionUrl,
+//                HttpMethod.POST,
+//                prescriptionRequest,
+//                String.class
+//            );
+//
+//            if (response.getStatusCode().is2xxSuccessful()) {
+//                return "redirect:/viewPrescriptions";
+//            } else {
+//                model.addAttribute("errorMessage", "Failed to add prescription");
+//                return "addPrescription";
+//            }
+//
+//        } catch (Exception ex) {
+//            model.addAttribute("errorMessage", "Error adding prescription: " + ex.getMessage());
+//            return "addPrescription";
+//        }
+//    }
+//
+//
+//
+//    @GetMapping("/viewPrescriptions")
+//    public String viewAllPrescriptions(Model model) {
+//        String url = SERVICE_URL + "/prescriptions/getAllPrescriptions";
+//        ResponseEntity<List<Prescription>> response = restTemplate().exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Prescription>>() {});
+//        List<Prescription> prescriptions = response.getBody();
+//        
+//        model.addAttribute("prescriptions", prescriptions);
+//        return "viewPrescriptions";
+//    }
+//    @GetMapping("/viewPrescription/{prescriptionId}")
+//    public String viewPrescriptionDetails(@PathVariable int prescriptionId, Model model) {
+//        String url = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+//        ResponseEntity<Prescription> response = restTemplate().getForEntity(url, Prescription.class);
+//        Prescription prescription = response.getBody();
+//        
+//        if (prescription != null) {
+//            model.addAttribute("prescription", prescription);
+//            return "viewPrescriptionDetails";
+//        } else {
+//            return "redirect:/viewPrescriptions";
+//        }
+//    }
+//
+//
+//@GetMapping("/updatePrescription/{prescriptionId}")
+//public String updatePrescriptionPage(@PathVariable int prescriptionId, Model model) {
+//    String prescriptionUrl = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+//    ResponseEntity<Prescription> prescriptionResponse = restTemplate().getForEntity(prescriptionUrl, Prescription.class);
+//    Prescription prescription = prescriptionResponse.getBody();
+//    
+//    String stocksUrl = SERVICE_URL + "/getAllStocks";
+//    ResponseEntity<List<Stock>> stocksResponse = restTemplate().exchange(
+//        stocksUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Stock>>() {}
+//    );
+//    List<Stock> availableStocks = stocksResponse.getBody();
+//    
+//    model.addAttribute("prescription", prescription);
+//    model.addAttribute("availableStocks", availableStocks);
+//    return "updatePrescription";
+//} 
+//
+//@PostMapping("/updatePrescription/{prescriptionId}")
+//public String updatePrescription(@PathVariable int prescriptionId, 
+//                                 @RequestParam Map<String, String> allParams,
+//                                 @RequestParam(required = false) String action,
+//                                 Model model) {
+//    String prescriptionUrl = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+//    ResponseEntity<Prescription> prescriptionResponse = restTemplate().getForEntity(prescriptionUrl, Prescription.class);
+//    Prescription prescription = prescriptionResponse.getBody();
+//    
+//    if (prescription == null) {
+//        return "redirect:/viewPrescriptions";
+//    }
+//    
+//    if (action != null && action.startsWith("remove_")) {
+//        int stockIdToRemove = Integer.parseInt(action.split("_")[1]);
+//        prescription.getPrescribedQuantities().remove(stockIdToRemove);
+//    } else if ("update".equals(action)) {
+//        Map<Integer, Integer> updatedQuantities = new HashMap<>();
+//        for (Map.Entry<String, String> entry : allParams.entrySet()) {
+//            if (entry.getKey().startsWith("quantities[") && entry.getKey().endsWith("]")) {
+//                int stockId = Integer.parseInt(entry.getKey().substring(11, entry.getKey().length() - 1));
+//                int quantity = Integer.parseInt(entry.getValue());
+//                updatedQuantities.put(stockId, quantity);
+//            }
+//        }
+//        prescription.setPrescribedQuantities(updatedQuantities);
+//        
+//        // Add new drug if selected
+//        String newDrugIdStr = allParams.get("newDrugId");
+//        String newQuantityStr = allParams.get("newQuantity");
+//        if (newDrugIdStr != null && !newDrugIdStr.isEmpty() && newQuantityStr != null && !newQuantityStr.isEmpty()) {
+//            int newDrugId = Integer.parseInt(newDrugIdStr);
+//            int newQuantity = Integer.parseInt(newQuantityStr);
+//            prescription.getPrescribedQuantities().put(newDrugId, newQuantity);
+//        }
+//    }
+//    
+//    // Update prescription in the backend
+//    String updateUrl = SERVICE_URL + "/prescriptions/updatePrescription/" + prescriptionId;
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.setContentType(MediaType.APPLICATION_JSON);
+//    HttpEntity<Prescription> request = new HttpEntity<>(prescription, headers);
+//    restTemplate().exchange(updateUrl, HttpMethod.PUT, request, Prescription.class);
+//    
+//    return "redirect:/viewPrescription/" + prescriptionId;
+//}
+//
+//
+//
+//    @PostMapping("/deletePrescription/{prescriptionId}")
+//    public String deletePrescription(@PathVariable int prescriptionId, Model model) {
+//        String url = SERVICE_URL + "/prescriptions/deletePrescription/" + prescriptionId;
+//        ResponseEntity<Void> response = restTemplate().exchange(url, HttpMethod.DELETE, null, Void.class);
+//        
+//        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+//            model.addAttribute("successMessage", "Prescription deleted successfully");
+//        } else {
+//            model.addAttribute("errorMessage", "Failed to delete Prescription");
+//        }
+//        return "redirect:/viewPrescriptions";
+//    }
+//
+//    
+
+    // Prescription Management
+    @GetMapping("/addPrescription")
+    public String addPrescriptionPage(Model model) {
+        model.addAttribute("prescription", new Prescription());
+        
+        String url = SERVICE_URL + "/getAllDrugs";
+        ResponseEntity<List<Drug>> response = restTemplate().exchange(
+            url, 
+            HttpMethod.GET, 
+            null, 
+            new ParameterizedTypeReference<List<Drug>>() {}
+        );
+        List<Drug> drugs = response.getBody();
+        
+        model.addAttribute("drugs", drugs);
+        
+        return "addPrescription";
+    }
+
+    @PostMapping("/addPrescription")
+    public String submitAddPrescriptionForm(
+        @RequestParam String patientName,
+        @RequestParam String doctorName,
+        @RequestParam LocalDate prescribedDate,
+        @RequestParam List<Integer> drugIds,
+        @RequestParam List<Integer> quantities,
+        Model model) {
+        
+        try {
+            Prescription prescription = new Prescription();
+            prescription.setPatientName(patientName);
+            prescription.setDoctorName(doctorName);
+            prescription.setPrescribedDate(prescribedDate);
+
+            Map<Integer, Integer> prescribedDrugs = new HashMap<>();
+            for (int i = 0; i < drugIds.size(); i++) {
+                prescribedDrugs.put(drugIds.get(i), quantities.get(i));
+            }
+            prescription.setPrescribedDrugs(prescribedDrugs);
+
+            String prescriptionUrl = SERVICE_URL + "/prescriptions/addPrescription";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Prescription> prescriptionRequest = new HttpEntity<>(prescription, headers);
+            
+            ResponseEntity<Prescription> response = restTemplate().exchange(
+                prescriptionUrl,
+                HttpMethod.POST,
+                prescriptionRequest,
+                Prescription.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "redirect:/viewPrescriptions";
+            } else {
+                model.addAttribute("errorMessage", "Failed to add prescription");
+                return "addPrescription";
+            }
+
+        } catch (Exception ex) {
+            model.addAttribute("errorMessage", "Error adding prescription: " + ex.getMessage());
+            return "addPrescription";
+        }
+    }
+
+    @GetMapping("/viewPrescriptions")
+    public String viewAllPrescriptions(Model model) {
+        String url = SERVICE_URL + "/prescriptions/getAllPrescriptions";
+        ResponseEntity<List<Prescription>> response = restTemplate().exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Prescription>>() {});
+        List<Prescription> prescriptions = response.getBody();
+        
+        model.addAttribute("prescriptions", prescriptions);
+        return "viewPrescriptions";
+    }
+
+    @GetMapping("/viewPrescription/{prescriptionId}")
+    public String viewPrescriptionDetails(@PathVariable int prescriptionId, Model model) {
+        String url = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+        ResponseEntity<Prescription> response = restTemplate().getForEntity(url, Prescription.class);
+        Prescription prescription = response.getBody();
+        
+        if (prescription != null) {
+            Map<Integer, Drug> drugDetails = new HashMap<>();
+            for (Integer drugId : prescription.getPrescribedDrugs().keySet()) {
+                String drugUrl = SERVICE_URL + "/getDrug/" + drugId;
+                ResponseEntity<Drug> drugResponse = restTemplate().getForEntity(drugUrl, Drug.class);
+                Drug drug = drugResponse.getBody();
+                if (drug != null) {
+                    drugDetails.put(drugId, drug);
+                }
+            }
+            
+            model.addAttribute("prescription", prescription);
+            model.addAttribute("drugDetails", drugDetails);
+            return "viewPrescriptionDetails";
+        } else {
+            return "redirect:/viewPrescriptions";
+        }
+    }
+
+    @GetMapping("/updatePrescription/{prescriptionId}")
+    public String updatePrescriptionPage(@PathVariable int prescriptionId, Model model) {
+        String prescriptionUrl = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+        ResponseEntity<Prescription> prescriptionResponse = restTemplate().getForEntity(prescriptionUrl, Prescription.class);
+        Prescription prescription = prescriptionResponse.getBody();
+        
+        String stocksUrl = SERVICE_URL + "/getAllStocks";
+        ResponseEntity<List<Stock>> stocksResponse = restTemplate().exchange(
+            stocksUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Stock>>() {}
+        );
+        List<Stock> availableStocks = stocksResponse.getBody();
+        
+        model.addAttribute("prescription", prescription);
+        model.addAttribute("availableStocks", availableStocks);
+        return "updatePrescription";
+    }
+
+    @PostMapping("/updatePrescription/{prescriptionId}")
+    public String updatePrescription(@PathVariable int prescriptionId, 
+                                     @RequestParam Map<String, String> allParams,
+                                     @RequestParam(required = false) String action,
+                                     Model model) {
+        try {
+            // First, get the current prescription
+            String getPrescriptionUrl = SERVICE_URL + "/prescriptions/getPrescription/" + prescriptionId;
+            ResponseEntity<Prescription> getPrescriptionResponse = restTemplate().getForEntity(getPrescriptionUrl, Prescription.class);
+            Prescription prescription = getPrescriptionResponse.getBody();
+
+            if (prescription == null) {
+                model.addAttribute("errorMessage", "Prescription not found");
+                return "updatePrescription";
+            }
+
+            Map<Integer, Integer> updatedDrugs = new HashMap<>(prescription.getPrescribedDrugs());
+
+            if ("update".equals(action)) {
+                // Update existing drug quantities
+                for (Map.Entry<String, String> entry : allParams.entrySet()) {
+                    if (entry.getKey().startsWith("quantities[") && entry.getKey().endsWith("]")) {
+                        int drugId = Integer.parseInt(entry.getKey().substring(11, entry.getKey().length() - 1));
+                        int quantity = Integer.parseInt(entry.getValue());
+                        updatedDrugs.put(drugId, quantity);
+                    }
+                }
+
+                // Add new drug if provided
+                String newDrugIdStr = allParams.get("newDrugId");
+                String newQuantityStr = allParams.get("newQuantity");
+                if (newDrugIdStr != null && !newDrugIdStr.isEmpty() && newQuantityStr != null && !newQuantityStr.isEmpty()) {
+                    int newDrugId = Integer.parseInt(newDrugIdStr);
+                    int newQuantity = Integer.parseInt(newQuantityStr);
+                    updatedDrugs.put(newDrugId, newQuantity);
+                }
+            } else if (action != null && action.startsWith("remove_")) {
+                int drugIdToRemove = Integer.parseInt(action.split("_")[1]);
+                updatedDrugs.remove(drugIdToRemove);
+            }
+
+            // Send update request to backend
+            String updateUrl = SERVICE_URL + "/prescriptions/updatePrescription/" + prescriptionId;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<Integer, Integer>> request = new HttpEntity<>(updatedDrugs, headers);
+            ResponseEntity<Prescription> response = restTemplate().exchange(updateUrl, HttpMethod.PUT, request, Prescription.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "redirect:/viewPrescription/" + prescriptionId;
+            } else {
+                model.addAttribute("errorMessage", "Failed to update prescription");
+                return "updatePrescription";
+            }
+        } catch (Exception ex) {
+            model.addAttribute("errorMessage", "Error updating prescription: " + ex.getMessage());
+            return "updatePrescription";
+        }
+    }
+
+
+
+    @PostMapping("/deletePrescription/{prescriptionId}")
+    public String deletePrescription(@PathVariable int prescriptionId, Model model) {
+        String url = SERVICE_URL + "/prescriptions/deletePrescription/" + prescriptionId;
+        ResponseEntity<Void> response = restTemplate().exchange(url, HttpMethod.DELETE, null, Void.class);
+        
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            model.addAttribute("successMessage", "Prescription deleted successfully");
+        } else {
+            model.addAttribute("errorMessage", "Failed to delete Prescription");
+        }
+        return "redirect:/viewPrescriptions";
+    }
+
+    // Billing Management
+    
+    @PostMapping("/generateBill/{prescriptionId}")
+    public String generateBill(@PathVariable int prescriptionId, Model model) {
+        String url = SERVICE_URL + "/billings/generateBill/" + prescriptionId;
+        try {
+            ResponseEntity<Billing> response = restTemplate().postForEntity(url, null, Billing.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return "redirect:/viewBillings";
+            } else {
+                model.addAttribute("errorMessage", "Failed to generate bill");
+                return "redirect:/viewPrescriptions";
+            }
+        } catch (Exception ex) {
+            model.addAttribute("errorMessage", "Error generating bill: " + ex.getMessage());
+            return "redirect:/viewPrescriptions";
+        }
+    }
+
+    @GetMapping("/viewBillings")
+    public String viewAllBillings(Model model) {
+        String url = SERVICE_URL + "/billings/getAllBillings";
+        ResponseEntity<List<Billing>> response = restTemplate().exchange(
+            url, 
+            HttpMethod.GET, 
+            null, 
+            new ParameterizedTypeReference<List<Billing>>() {}
+        );
+        List<Billing> billings = response.getBody();
+        
+        model.addAttribute("billings", billings);
+        return "viewBillings";
+    }
+
+    @GetMapping("/printBill/{billingId}")
+    public String printBill(@PathVariable int billingId, Model model) {
+        String url = SERVICE_URL + "/billings/getBilling/" + billingId;
+        ResponseEntity<Billing> response = restTemplate().getForEntity(url, Billing.class);
+        Billing billing = response.getBody();
+        
+        if (billing != null) {
+            model.addAttribute("billing", billing);
+            return "printBill";
+        } else {
+            return "redirect:/viewBillings";
+        }
     }
 }
