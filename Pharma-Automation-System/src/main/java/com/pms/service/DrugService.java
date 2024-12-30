@@ -3,6 +3,7 @@ package com.pms.service;
 import com.pms.exception.InvalidEntityException;
 import com.pms.model.Drug;
 import com.pms.repository.DrugRepository;
+import com.pms.repository.PrescriptionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,18 +20,24 @@ public class DrugService {
 
     @Autowired
     private DrugRepository drugRepository;
+    
+    @Autowired
+    private Drug drug;
+    
+    @Autowired
+    private PrescriptionRepository prescriptionRepository;
 
     public List<Drug> getAllDrugs() {
-        return drugRepository.findAll();
+        return drugRepository.findAllActive();
     }
 
     public Drug getDrugById(Long id) throws InvalidEntityException {
-        Drug drug = drugRepository.findById(id).orElse(null);
-        if (drug != null) {
-            return drug;
-        } else {
-            throw new InvalidEntityException("Drug with ID " + id + " not found");
+        Drug drug = drugRepository.findById(id)
+                .orElseThrow(() -> new InvalidEntityException("Drug with ID " + id + " not found"));
+        if (drug.isDeleted()) {
+            throw new InvalidEntityException("Drug with ID " + id + " has been deleted");
         }
+        return drug;
     }
     @Transactional
     public Drug saveDrug(Drug drug)throws InvalidEntityException {
@@ -94,12 +102,13 @@ public class DrugService {
         drugRepository.save(drug);
     }
     @Transactional
-    public void deleteDrug(Long id)throws InvalidEntityException {
-        if (!drugRepository.existsById(id)) {
-            throw new InvalidEntityException("Drug with ID " + id + " not found");
-        }
-        drugRepository.deleteById(id);
+    public void softDeleteDrug(Long id) throws InvalidEntityException {
+        Drug drug = drugRepository.findById(id)
+            .orElseThrow(() -> new InvalidEntityException("Drug with ID " + id + " not found"));
+        drug.setDeletedAt(LocalDateTime.now());
+        drugRepository.save(drug);
     }
+    
     public List<Drug> searchDrugs(String query) {
         return drugRepository.findByNameStartingWithIgnoreCase(query);
     }
@@ -114,3 +123,4 @@ public class DrugService {
 
 
 }
+

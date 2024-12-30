@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.pms.model.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,33 +37,64 @@ public class PrescriptionService {
     @Autowired
     private BillRepository billRepository;
     
+    @Autowired
+    private StockService stockService;
+
     public List<Prescription> getAllPrescriptions() {
         return prescriptionRepository.findAll();
     }
-    @Transactional
-    public Prescription addPrescription(Prescription prescription) throws InvalidEntityException {
-        for (PrescriptionItem item : prescription.getItems()) {
-            Drug drug = drugRepository.findById(item.getDrug().getId())
-                    .orElseThrow(() -> new InvalidEntityException("Drug not found with id: " + item.getDrug().getId()));
 
-            if (!drug.isActive() || drug.isBanned()) {
-                throw new InvalidEntityException("Cannot prescribe deactivated or banned drug: " + drug.getName());
+    @Transactional
+    public Prescription addPrescription(Prescription prescription)throws InvalidEntityException {
+        prescription.getItems().forEach(item -> {
+            Drug drug = null;
+            try {
+                drug = drugRepository.findById(item.getDrug().getId())
+                        .orElseThrow(() -> new InvalidEntityException("Drug not found with id: " + item.getDrug().getId()));
+            } catch (InvalidEntityException e) {
+                throw new RuntimeException(e);
             }
 
-            Integer totalAvailableQuantity = stockRepository.getTotalQuantityByDrugId(drug.getId());
-            if (totalAvailableQuantity == null || totalAvailableQuantity == 0) {
-                throw new InvalidEntityException("No stock available for drug: " + drug.getName());
-            } else if (totalAvailableQuantity < item.getQuantity()) {
-                throw new InvalidEntityException("Insufficient stock for drug: " + drug.getName() + ". Available: " + totalAvailableQuantity + ", Requested: " + item.getQuantity());
+            if (!drug.isActive()||drug.isBanned()) {
+                try {
+                    throw new InvalidEntityException("Cannot prescribe deactivated drug: " + drug.getName());
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            Stock stock = stockRepository.findByDrugId(drug.getId());
+            if (stock == null) {
+                try {
+                    throw new InvalidEntityException("Stock not found for drug: " + drug.getName());
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // Check if the drug is expired
+            if (stock.getExpiryDate().isBefore(LocalDate.now())) {
+                try {
+                    throw new InvalidEntityException("Drug " + drug.getName() + " has expired and cannot be prescribed.");
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            int totalAvailableQuantity = stockRepository.getTotalQuantityByDrugId(drug.getId());
+            if (totalAvailableQuantity < item.getQuantity()) {
+                try {
+                    throw new InvalidEntityException("Insufficient stock for drug: " + drug.getName());
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             item.setPrescription(prescription);
-        }
+        });
 
         prescription.setBillGenerated(false);
         return prescriptionRepository.save(prescription);
     }
-
 
     public Prescription getPrescriptionById(Long id) {
         try {

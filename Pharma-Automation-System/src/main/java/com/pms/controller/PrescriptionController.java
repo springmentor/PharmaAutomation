@@ -42,6 +42,20 @@ public class PrescriptionController {
         prescriptionService.deletePrescriptionById(prescriptionId);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/filter")
+    public ResponseEntity<List<Prescription>> filterPrescriptions(@RequestParam(required = false) Boolean isBillGenerate) {
+        List<Prescription> prescriptions;
+        if (isBillGenerate != null) {
+            if (isBillGenerate) {
+                prescriptions = prescriptionService.getPrescriptionsWithGeneratedBills();
+            } else {
+                prescriptions = prescriptionService.getPrescriptionsWithoutGeneratedBills();
+            }
+        } else {
+            prescriptions = prescriptionService.getAllPrescriptions();
+        }
+        return ResponseEntity.ok(prescriptions);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<List<Prescription>> searchPrescriptionsByPatientName(@RequestParam("patientName") String patientName) {
