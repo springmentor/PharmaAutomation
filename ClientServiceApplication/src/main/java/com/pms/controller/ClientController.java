@@ -642,7 +642,7 @@ public class ClientController {
                     String.class
             );
             logger.info("Reorder processed successfully for supplier ID: {}", supplierId);
-            redirectAttributes.addFlashAttribute("success", "Reorder sent successfully for"+supplierId);
+            redirectAttributes.addFlashAttribute("success", "Reorder sent successfully ");
             return "redirect:/suppliers";
         } catch (Exception e) {
             logger.error("Error during reorder process", e);

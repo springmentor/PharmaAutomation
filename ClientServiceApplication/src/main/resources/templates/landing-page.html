@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --accent-color: #e74c3c;
-            --gradient-1: #9b59b6;
-            --gradient-2: #8e44ad;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
+            --primary-color: #2D3436;
+            --secondary-color: #0984E3;
+            --accent-color: #00B894;
+            --gradient-1: #6C5CE7;
+            --gradient-2: #a363d9;
+            --light-color: #F8F9FA;
+            --dark-color: #2D3436;
         }
 
         body {
@@ -25,7 +25,7 @@
 
         /* Navbar Styles */
         .navbar {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.95), rgba(46, 204, 113, 0.95));
+            background: linear-gradient(135deg, rgba(45, 52, 54, 0.95), rgba(9, 132, 227, 0.95));
             backdrop-filter: blur(10px);
             padding: 20px 0;
             transition: all 0.3s ease;
@@ -107,8 +107,8 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg,
-                rgba(155, 89, 182, 0.85),
-                rgba(231, 76, 60, 0.85));
+                rgba(108, 92, 231, 0.85),
+                rgba(0, 184, 148, 0.85));
             z-index: 1;
         }
 
@@ -256,33 +256,14 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
+        .row {
+    margin: 0 auto;
+    justify-content: center;
+}
 
-        /* Contact Section */
-        .contact-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        }
-
-        .contact-form {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        .form-control {
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #e9ecef;
-            margin-bottom: 20px;
-        }
-
-        .form-control:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
-        }
-
-
+.feature-card {
+    height: 90%;
+}
 
     </style>
 </head>
@@ -298,15 +279,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <!-- <a class="nav-link" href="#features">Features</a> -->
-                </li>
-                <li class="nav-item">
-                    <!-- <a class="nav-link" href="#stats">Statistics</a> -->
-                </li>
-                <li class="nav-item">
-                    <!-- <a class="nav-link" href="#">Contact</a> -->
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/drugs">
                         <i class="fas fa-pills me-1"></i>Drug Management
@@ -328,25 +301,17 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link active reports-nav-link" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-chart-bar me-1"></i>Reports
                     </a>
-                    <ul class="dropdown-menu reports-dropdown-menu" aria-labelledby="reportsDropdown">
+                    <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
                         <li>
                             <a class="dropdown-item" href="http://localhost:8081/stocks/filter?filter=below_threshold">
-                                Drug Below Threshold Value
+                                Drugs Below Threshold
                             </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" href="/reports/unprescribed-drugs">
-                                Unprescribed Drugs
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/reports/max-prescribed-drugs">
-                                Max Prescribed Drugs
-                            </a>
-                        </li>
+                        <li><a class="dropdown-item" href="/reports/max-prescribed">Max Prescribed Drugs</a></li>
+                        <li><a class="dropdown-item" href="/reports/unprescribed">Unprescribed Drugs</a></li>
                     </ul>
                 </li>
             </ul>
@@ -379,29 +344,38 @@
 <section id="features" class="features-section">
     <div class="container">
         <h2 class="text-center mb-5">Key Features</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
+        <div class="row row-cols-4 g-4">
+            <div class="col">
                 <div class="feature-card">
                     <i class="fas fa-pills feature-icon"></i>
                     <h3>Drug Management</h3>
-                    <p>Efficiently manage your drug inventory with detailed tracking and automated alerts.</p>
+                    <p>Efficiently manage your drug with tracking and automated alerts.</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col">
                 <div class="feature-card">
                     <i class="fas fa-boxes feature-icon"></i>
-                    <h3>Stock Control</h3>
+                    <h3>Stock Management</h3>
                     <p>Monitor stock levels, set thresholds, and manage expiry dates effectively.</p>
                 </div>
             </div>
-            <div class="col-md-4">
+           
+            <div class="col">
                 <div class="feature-card">
-                    <i class="fas fa-file-invoice-dollar feature-icon"></i>
-                    <h3>Billing System</h3>
-                    <p>Streamlined billing process with automatic calculations and invoice generation.</p>
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3>Supplier System</h3>
+                    <p>Gain insights into your sales and inventory management of the Drugs.</p>
                 </div>
             </div>
+			<div class="col">
+			               <div class="feature-card">
+			                   <i class="fas fa-file-invoice-dollar feature-icon"></i>
+			                   <h3>Prescription & Billing</h3>
+			                   <p>Streamlined billing process of automatic calculations and generation.</p>
+			               </div>
+			           </div>
         </div>
+
     </div>
 </section>
 

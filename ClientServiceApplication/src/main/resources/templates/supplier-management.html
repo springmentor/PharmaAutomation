@@ -10,13 +10,13 @@
 
     <style>
         :root {
-           --primary-color: #3498db;
-           --secondary-color: #2ecc71;
-           --accent-color: #e74c3c;
-           --gradient-1: #9b59b6;
-           --gradient-2: #8e44ad;
-           --light-color: #ecf0f1;
-           --dark-color: #34495e;
+           --primary-color: #2D3436;
+           --secondary-color: #0984E3;
+           --accent-color: #00B894;
+           --gradient-1: #6C5CE7;
+           --gradient-2: #a363d9;
+           --light-color: #F8F9FA;
+           --dark-color: #2D3436;
        }
 
        body {
@@ -26,7 +26,7 @@
        }
 
        .navbar {
-           background: linear-gradient(135deg, rgba(52, 152, 219, 0.95), rgba(46, 204, 113, 0.95));
+           background: linear-gradient(135deg, rgba(45, 52, 54, 0.95), rgba(9, 132, 227, 0.95));
            backdrop-filter: blur(10px);
            padding: 20px 0;
            transition: all 0.3s ease;
@@ -63,7 +63,7 @@
        }
 
        .hero-section {
-           background: linear-gradient(135deg, rgba(155, 89, 182, 0.85), rgba(231, 76, 60, 0.85)),
+           background: linear-gradient(135deg, rgba(108, 92, 231, 0.85), rgba(0, 184, 148, 0.85)),
                        url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80');
            background-size: cover;
            background-position: center;
@@ -160,6 +160,9 @@
           border-color: var(--secondary-color);
           box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
       }
+       .navbar-nav {
+    margin-left: 250px;
+}
 
       .modal-header {
           background: var(--primary-color);
@@ -170,61 +173,58 @@
         .btn-close {
           filter: brightness(0) invert(1);
       }
-
-      .btn-turquoise {
-          background-color: #1abc9c;
-      }
-
-      .btn-turquoise:hover {
-          background-color: #16a085;
-      }
     </style>
 </head>
 <body>
 	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg">
-	    <div class="container-fluid">
-	        <a class="navbar-brand" href="/pharma">
-	            <i class="fas fa-clinic-medical me-2"></i>PharmaCore
-	        </a>
-	        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-	            <span class="navbar-toggler-icon"></span>
-	        </button>
-	        <div class="collapse navbar-collapse" id="navbarNav">
-	            <ul class="navbar-nav ms-auto">
-	                <li class="nav-item">
-	                    <a class="nav-link" href="/drugs">
-	                        <i class="fas fa-pills me-1"></i>Drug Management
-	                    </a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="nav-link" href="/stocks">
-	                        <i class="fas fa-boxes me-1"></i>Stock Management
-	                    </a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="nav-link" href="/prescriptions">
-	                        <i class="fas fa-receipt me-1"></i>Prescription & Billing
-	                    </a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="nav-link" href="/suppliers">
-	                        <i class="fas fa-users me-1"></i>Supplier Management
-	                    </a>
-	                </li>
-					<li class="nav-item dropdown">
-					           <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					             <i class="fas fa-chart-bar me-1"></i>Reports
-					           </a>
-					           <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
-					             <li><a class="dropdown-item" href="/reports/max-prescribed">Max Prescribed Drugs</a></li>
-					             <li><a class="dropdown-item" href="/reports/unprescribed">Unprescribed Drugs</a></li>
-					           </ul>
-					         </li>
-	            </ul>
-	        </div>
-	    </div>
-	</nav>
+		<nav class="navbar navbar-expand-lg">
+		    <div class="container-fluid">
+		        <a class="navbar-brand" href="/pharma">
+		            <i class="fas fa-clinic-medical me-2"></i>PharmaCore
+		        </a>
+		        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <div class="collapse navbar-collapse" id="navbarNav">
+		            <ul class="navbar-nav">
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/drugs">
+		                        <i class="fas fa-pills me-1"></i>Drug Management
+		                    </a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/stocks">
+		                        <i class="fas fa-boxes me-1"></i>Stock Management
+		                    </a>
+		                </li>
+						<li class="nav-item">
+						      <a class="nav-link" href="/suppliers">
+						        <i class="fas fa-users me-1"></i>Supplier Management
+						      </a>
+					    </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/prescriptions">
+		                        <i class="fas fa-receipt me-1"></i>Prescription & Billing
+		                    </a>
+		                </li>
+		                <li class="nav-item dropdown">
+	                        <a class="nav-link" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+	                            <i class="fas fa-chart-bar me-1"></i>Reports
+	                        </a>
+	                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+	                            <li>
+	                                <a class="dropdown-item" href="http://localhost:8081/stocks/filter?filter=below_threshold">
+	                                    Stocks Below Threshold
+	                                </a>
+	                            </li>
+	                            <li><a class="dropdown-item" href="/reports/max-prescribed">Max Prescribed Drugs</a></li>
+	                            <li><a class="dropdown-item" href="/reports/unprescribed">Unprescribed Drugs</a></li>
+	                        </ul>
+	                    </li>
+		            </ul>
+		        </div>
+		    </div>
+		</nav>
 <div class="hero-section">
     <div>
         <h1>Manage Your Suppliers</h1>
