@@ -12,12 +12,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
 
-    @Query("SELECT s FROM Stock s WHERE s.expiryDate < :currentDate")
-    List<Stock> findStocksPastExpiryDate(@Param("currentDate") LocalDate currentDate);
     @Query("SELECT s FROM Stock s WHERE s.quantity < s.threshold")
     List<Stock> findStocksBelowThreshold();
     List<Stock> findByDrugIdOrderByExpiryDateAsc(Long id);
     @Query("SELECT SUM(s.quantity) FROM Stock s WHERE s.drug.id = :drugId")
     int getTotalQuantityByDrugId(@Param("drugId") Long drugId);
+    Stock findByDrugId(Long drugId);
 }
 

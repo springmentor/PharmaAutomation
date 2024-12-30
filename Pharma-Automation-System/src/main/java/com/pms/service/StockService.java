@@ -2,6 +2,7 @@ package com.pms.service;
 
 import com.pms.exception.InvalidEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -158,7 +159,7 @@ public class StockService {
     }
 
 
-//     @Scheduled(cron = "*/5 * * * * ?") 
+     @Scheduled(cron = "*/5 * * * * ?") 
 //	 @Scheduled(cron = "0 0 * * * * ?") //runs every one hr
 	 public void scheduledReorderNotifications() {
 	     // Automatically process reorder notifications for all stocks

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.pms.model.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,23 @@ public class PrescriptionService {
             if (!drug.isActive()||drug.isBanned()) {
                 try {
                     throw new InvalidEntityException("Cannot prescribe deactivated drug: " + drug.getName());
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            Stock stock = stockRepository.findByDrugId(drug.getId());
+            if (stock == null) {
+                try {
+                    throw new InvalidEntityException("Stock not found for drug: " + drug.getName());
+                } catch (InvalidEntityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // Check if the drug is expired
+            if (stock.getExpiryDate().isBefore(LocalDate.now())) {
+                try {
+                    throw new InvalidEntityException("Drug " + drug.getName() + " has expired and cannot be prescribed.");
                 } catch (InvalidEntityException e) {
                     throw new RuntimeException(e);
                 }

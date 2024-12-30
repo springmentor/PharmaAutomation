@@ -41,8 +41,8 @@ public class DrugController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteDrug(@RequestParam Long id)throws InvalidEntityException {
-        drugService.deleteDrug(id);
+    public ResponseEntity<Void> softDeleteDrug(@RequestParam Long id) throws InvalidEntityException {
+        drugService.softDeleteDrug(id);
         return ResponseEntity.ok().build();
     }
 

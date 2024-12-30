@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -43,6 +44,9 @@ public class Drug {
     private boolean banned = false;
     private String bannedReason;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+    
     @OneToMany(mappedBy = "drug", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Stock> stock;
@@ -67,5 +71,10 @@ public class Drug {
                 ", suppliersCount=" + (suppliers != null ? suppliers.size() : 0) +
                 '}';
     }
+
+	public boolean isDeleted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
 
