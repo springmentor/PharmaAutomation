@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Reports Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2D3436;
+            --secondary-color: #0984E3;
+            --accent-color: #00B894;
+            --gradient-1: #6C5CE7;
+            --gradient-2: #a363d9;
+            --light-color: #F8F9FA;
+            --dark-color: #2D3436;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, rgba(45, 52, 54, 0.95), rgba(9, 132, 227, 0.95));
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 15px;
+            position: relative;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.85), rgba(0, 184, 148, 0.85)),
+                        url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 180px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .container{
+        margin-top:20px;
+        margin-bottom:20px;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .report-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-body {
+            padding: 20px;
+        }
+
+        .report-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stat-badge.positive {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .stat-badge.warning {
+            background: #FF6F61;
+            color: white;
+        }
+
+        .btn-custom {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-input {
+            width: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+ .navbar-nav {
+    margin-left: 250px;
+}
+    </style>
+</head>
+<body>
+	<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg">
+		    <div class="container-fluid">
+		        <a class="navbar-brand" href="/pharma">
+		            <i class="fas fa-clinic-medical me-2"></i>PharmaCore
+		        </a>
+		        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <div class="collapse navbar-collapse" id="navbarNav">
+		            <ul class="navbar-nav">
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/drugs">
+		                        <i class="fas fa-pills me-1"></i>Drug Management
+		                    </a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/stocks">
+		                        <i class="fas fa-boxes me-1"></i>Stock Management
+		                    </a>
+		                </li>
+						<li class="nav-item">
+						      <a class="nav-link" href="/suppliers">
+						        <i class="fas fa-users me-1"></i>Supplier Management
+						      </a>
+					    </li>
+		                <li class="nav-item">
+		                    <a class="nav-link" href="/prescriptions">
+		                        <i class="fas fa-receipt me-1"></i>Prescription & Billing
+		                    </a>
+		                </li>
+		                <li class="nav-item dropdown">
+	                        <a class="nav-link" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+	                            <i class="fas fa-chart-bar me-1"></i>Reports
+	                        </a>
+	                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+	                            <li>
+	                                <a class="dropdown-item" href="http://localhost:8081/stocks/filter?filter=below_threshold">
+	                                    Stocks Below Threshold
+	                                </a>
+	                            </li>
+	                            <li><a class="dropdown-item" href="/reports/max-prescribed">Max Prescribed Drugs</a></li>
+	                            <li><a class="dropdown-item" href="/reports/unprescribed">Unprescribed Drugs</a></li>
+	                        </ul>
+	                    </li>
+		            </ul>
+		        </div>
+		    </div>
+		</nav>
+	 <div class="container">
+	        <!-- Most Prescribed Drugs Report -->
+	        <div class="report-card">
+	            <div class="report-header">
+	                <div>
+	                    <i class="fas fa-chart-line me-2"></i>
+	                    <span class="h5 mb-0">Most Prescribed Drugs</span>
+	                </div>
+	                <div class="filter-section">
+	                    <form action="/reports/max-prescribed" method="get" class="d-inline-flex align-items-center">
+	                        <input type="number" name="limit" class="filter-input" placeholder="Limit" value="5" min="1">
+	                        <button type="submit" class="btn btn-custom">
+	                            <i class="fas fa-filter me-1"></i>Filter
+	                        </button>
+	                    </form>
+	                </div>
+	            </div>
+	            <div class="report-body">
+	                <div th:if="${maxPrescribedDrugs != null and not #lists.isEmpty(maxPrescribedDrugs)}">
+	                    <div class="report-item" th:each="entry : ${maxPrescribedDrugs}">
+	                        <div>
+	                            <h6 class="mb-1" th:text="${entry.drug.name}">Drug Name</h6>
+	                            <small class="text-muted">Total Prescriptions: <span th:text="${entry.quantity}">0</span></small>
+	                        </div>
+	                        <span class="stat-badge positive">
+	                            <i class="fas fa-arrow-up me-1"></i>High Demand
+	                        </span>
+	                    </div>
+	                </div>
+	                <div th:if="${maxPrescribedDrugs == null or #lists.isEmpty(maxPrescribedDrugs)}" class="text-center py-4">
+	                    <p class="text-muted">No prescription data available</p>
+	                </div>
+	            </div>
+	        </div>
+
+	        <!-- Unprescribed Drugs Report -->
+	        <div class="report-card">
+	            <div class="report-header">
+	                <div>
+	                    <i class="fas fa-exclamation-triangle me-2"></i>
+	                    <span class="h5 mb-0">Unprescribed Drugs</span>
+	                </div>
+	                <div class="filter-section">
+	                    <form action="/reports/unprescribed" method="get" class="d-inline-flex align-items-center">
+	                        <input type="number" name="days" class="filter-input" placeholder="Days" value="30" min="1">
+	                        <button type="submit" class="btn btn-custom">
+	                            <i class="fas fa-filter me-1"></i>Filter
+	                        </button>
+	                    </form>
+	                </div>
+	            </div>
+	            <div class="report-body">
+	                <div th:if="${unprescribedDrugs != null and not #lists.isEmpty(unprescribedDrugs)}">
+	                    <div class="report-item" th:each="drug : ${unprescribedDrugs}">
+	                        <div>
+	                            <h6 class="mb-1" th:text="${drug.name}">Drug Name</h6>
+	                            <small class="text-muted">Last Prescribed: Never</small>
+	                        </div>
+	                        <span class="stat-badge warning">
+	                            <i class="fas fa-arrow-down me-1"></i>Low Demand
+	                        </span>
+	                    </div>
+	                </div>
+	                <div th:if="${unprescribedDrugs == null or #lists.isEmpty(unprescribedDrugs)}" class="text-center py-4">
+	                    <p class="text-muted">No unprescribed drugs found</p>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	    <script>
+	        // Add any custom JavaScript here
+	        document.addEventListener('DOMContentLoaded', function() {
+	            // Initialize tooltips
+	            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	                return new bootstrap.Tooltip(tooltipTriggerEl)
+	            });
+	        });
+	    </script>
+	</body>
+	</html>
+
